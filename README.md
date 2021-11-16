@@ -30,7 +30,7 @@ strong smell of NIH (not invented here syndrom)? Because you need to
 implemented this at least once to get a feeling how the structure
 works and why you actually require it.
 
-| :exclamation:  You should probably use the repositories listes above..   |
+| :exclamation:  You should probably use the repositories listed above..   |
 |--------------------------------------------------------------------------|
 
 ### About the GitOps operator and cluster-admin privileges
@@ -49,5 +49,5 @@ As a quick fix we basically have two options
 ## ToDo
 
 * Implement testing
-** Try to render every customize base and overlay
-** At least if yaml is valid for argocd applications
+  * Try to render every customize base and overlay
+  * At least if yaml is valid for argocd applications
