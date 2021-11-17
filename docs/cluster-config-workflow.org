@@ -108,7 +108,7 @@ note top of clusterapp
 end note
 
 note left of oauth
-	App of Apps
+	App of Apps component
 end note
 
 note left of oauthfolder
