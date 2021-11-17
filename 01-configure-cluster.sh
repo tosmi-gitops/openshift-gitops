@@ -12,8 +12,6 @@ function error() {
 
 /usr/bin/env kustomize 2>&1 >/dev/null || error "Could not execute kustomize binary!"
 
-if [ "$OVERLAY"  = "NONE" ];then
-    kustomize build bootstrap/gitops/base/ | oc apply -f -
-else
-    kustomize build bootstrap/gitops/overlays/"$OVERLAY" | oc apply -f -
-fi
+[ "$OVERLAY" == "NONE" ] && error "You need to specify an overlay!"
+
+/usr/bin/env kustomize build bootstrap/cluster/overlays/"$OVERLAY" | oc apply -f -

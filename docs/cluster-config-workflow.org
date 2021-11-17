@@ -2,7 +2,7 @@
 
 ** Bootstrapping GitOps operator
 
-  #+begin_src plantuml :file cluster-config-workflow.png
+  #+begin_src plantuml :file gitops-bootstrap.png
 title Cluster Configuration Workflow
 
 actor User
@@ -20,25 +20,58 @@ note bottom of gitops
 end note
   #+end_src
 
+  #+RESULTS:
+  [[file:gitops-bootstrap.png]]
+
 ** Deploying the cluster configuration
 
 Because we deployed the GitOps operator in the previous step, we are now
 able to create ArgoCD applications (and [[https://argo-cd.readthedocs.io/en/stable/operator-manual/declarative-setup/#app-of-apps][App of Apps]]).
 
   #+begin_src plantuml :file cluster-config-workflow.png
+@startuml
 title Cluster Configuration Workflow
 
 actor User
 file "01-configure-cluster.sh" as script
-component "bootstrap/gitops/base" as bootstrap
-component "components/apps/gitops-operator/base" as gitops
+folder "bootstrap/cluster/overlay/local.ocp" as clusteroverlay
+component "cluster-config-manager App of Apps" as configmanager
+folder "clusters/local.home/argocd/apps/cluster/overlays/default" as clusterapp
 
+artifact "oauth configuration" as oauth
+folder "components/configuration/oauth/overlays/htpasswd" as oauthfolder
+
+artifact "sealed secrets" as sealedsecrets
+folder "components/apps/sealed-secrets/base" as sealedsecretsfolder
+
+artifact "resource locker" as resourcelocker
+artifact "ntp configuration" as ntp
 
 User -> script : Executes
-script -> bootstrap : Kustomize
-bootstrap -> gitops : Renders base
+script -> clusteroverlay : Runs kustomize build
+clusteroverlay -> configmanager : Deploys
+configmanager -> clusterapp : kustomize build
 
-note bottom of gitops
-	Installs the GitOps operator subscription
+clusterapp --> oauth
+oauth --> oauthfolder
+
+clusterapp --> sealedsecrets
+sealedsecrets --> sealedsecretsfolder
+
+clusterapp --> resourcelocker
+clusterapp --> ntp
+
+note top of configmanager
+	ArgoCD application that deploys other ArgoCD
+	applications via kustomize
 end note
+
+note top of clusterapp
+	Kustomize configuration of all resources to be deployed.
+	Resources are other ArgoCD applications.
+end note
+@enduml
   #+end_src
+
+  #+RESULTS:
+  [[file:cluster-config-workflow.png]]

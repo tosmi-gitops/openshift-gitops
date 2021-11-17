@@ -1,24 +1,24 @@
 
 # Table of Contents
 
-1.  [Basic cluster configuration workflow](#org708f3ec)
-    1.  [Bootstrapping GitOps operator](#orge3610a0)
-    2.  [Deploying the cluster configuration](#orge406a98)
+1.  [Basic cluster configuration workflow](#org59fcb4d)
+    1.  [Bootstrapping GitOps operator](#org90f7c20)
+    2.  [Deploying the cluster configuration](#org10abe09)
 
 
-<a id="org708f3ec"></a>
+<a id="org59fcb4d"></a>
 
 # Basic cluster configuration workflow
 
 
-<a id="orge3610a0"></a>
+<a id="org90f7c20"></a>
 
 ## Bootstrapping GitOps operator
 
-![img](cluster-config-workflow.png)
+![img](gitops-bootstrap.png)
 
 
-<a id="orge406a98"></a>
+<a id="org10abe09"></a>
 
 ## Deploying the cluster configuration
 
