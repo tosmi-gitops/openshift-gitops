@@ -1,18 +1,44 @@
 * Basic cluster configuration workflow
 
+** Bootstrapping GitOps operator
+
   #+begin_src plantuml :file cluster-config-workflow.png
 title Cluster Configuration Workflow
 
 actor User
 file "00-deploy-gitops.sh" as script
-component "bootstrap/overlays/local.ocp/cluster-config-manager" as cfgman
-collections "clusters/local.ocp/argocd/apps/cluster/overlays/default" as default
+component "bootstrap/gitops/base" as bootstrap
+component "components/apps/gitops-operator/base" as gitops
 
 
 User -> script : Executes
-script -> cfgman : Kustomize
-cfgman -> default
+script -> bootstrap : Kustomize
+bootstrap -> gitops : Renders base
+
+note bottom of gitops
+	Installs the GitOps operator subscription
+end note
   #+end_src
 
-  #+RESULTS:
-  [[file:cluster-config-workflow.png]]
+** Deploying the cluster configuration
+
+Because we deployed the GitOps operator in the previous step, we are now
+able to create ArgoCD applications (and [[https://argo-cd.readthedocs.io/en/stable/operator-manual/declarative-setup/#app-of-apps][App of Apps]]).
+
+  #+begin_src plantuml :file cluster-config-workflow.png
+title Cluster Configuration Workflow
+
+actor User
+file "01-configure-cluster.sh" as script
+component "bootstrap/gitops/base" as bootstrap
+component "components/apps/gitops-operator/base" as gitops
+
+
+User -> script : Executes
+script -> bootstrap : Kustomize
+bootstrap -> gitops : Renders base
+
+note bottom of gitops
+	Installs the GitOps operator subscription
+end note
+  #+end_src
