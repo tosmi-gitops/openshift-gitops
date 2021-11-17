@@ -1,6 +1,8 @@
 * Basic cluster configuration workflow
 
-** Bootstrapping GitOps operator
+** Bootstrapping the GitOps operator
+
+First we need to bootstrap ArgoCD via the OpenShift GitOps operator:
 
   #+begin_src plantuml :file gitops-bootstrap.png
 title Cluster Configuration Workflow
@@ -26,7 +28,12 @@ end note
 ** Deploying the cluster configuration
 
 Because we deployed the GitOps operator in the previous step, we are now
-able to create ArgoCD applications (and [[https://argo-cd.readthedocs.io/en/stable/operator-manual/declarative-setup/#app-of-apps][App of Apps]]).
+able to create ArgoCD applications.
+
+We leverage the [[https://argo-cd.readthedocs.io/en/stable/operator-manual/declarative-setup/#app-of-apps][App of Apps]] pattern. A cluster definition contains an
+ArgoCD App of Apps that deploys applications managing a single components.
+
+Sounds crazy? Yes, indeed. A picture is worth more than a thousand words:
 
   #+begin_src plantuml :file cluster-config-workflow.png
 @startuml
