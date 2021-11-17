@@ -36,16 +36,28 @@ actor User
 file "01-configure-cluster.sh" as script
 folder "bootstrap/cluster/overlay/local.ocp" as clusteroverlay
 component "cluster-config-manager App of Apps" as configmanager
-folder "clusters/local.home/argocd/apps/cluster/overlays/default" as clusterapp
+folder "clusters/local.ocp/argocd/apps/cluster/" as clusterapp
 
-artifact "oauth configuration" as oauth
-folder "components/configuration/oauth/overlays/htpasswd" as oauthfolder
+component "OAuth Configuration" as oauth
+folder "components/argocd/apps/oauth/base" as oauthfolder
+artifact "OAuth Configuration App" as oauthapp
+folder "components/configuration/overlay/oauth/htpasswd" as oauthappfolder
 
-artifact "sealed secrets" as sealedsecrets
-folder "components/apps/sealed-secrets/base" as sealedsecretsfolder
+component "chrony Configuration" as chrony
+folder "components/argocd/apps/chrony/base" as chronyfolder
+artifact "chrony Configuration App" as chronyapp
+folder "components/apps/resource-locker/overlay/base" as chronyappfolder
 
-artifact "resource locker" as resourcelocker
-artifact "ntp configuration" as ntp
+component "Sealed Secrets" as sealedsecrets
+folder "components/argocd/apps/sealed-secrets/base" as sealedsecretsfolder
+artifact "Sealed Secrets App" as sealedsecretsapp
+folder "components/apps/sealed-secrets/overlay/base" as sealedsecretsappfolder
+
+component "Resource Locker" as resourcelocker
+folder "components/argocd/apps/resource-locker/base" as resourcelockerfolder
+artifact "Resource Locker App" as resourcelockerapp
+folder "components/apps/resource-locker/overlay/base" as resourcelockerappfolder
+
 
 User -> script : Executes
 script -> clusteroverlay : Runs kustomize build
@@ -53,13 +65,25 @@ clusteroverlay -> configmanager : Deploys
 configmanager -> clusterapp : kustomize build
 
 clusterapp --> oauth
-oauth --> oauthfolder
+oauth --> oauthfolder : kustomize build
+oauthfolder --> oauthapp : Deploys
+oauthapp --> oauthappfolder : kustomize build
+
+clusterapp --> chrony
+chrony --> chronyfolder
+chronyfolder --> chronyapp : Deploys
+chronyapp --> chronyappfolder : kustomize build
 
 clusterapp --> sealedsecrets
 sealedsecrets --> sealedsecretsfolder
+sealedsecretsfolder --> sealedsecretsapp : Deploys
+sealedsecretsapp --> sealedsecretsappfolder : kustomize build
 
 clusterapp --> resourcelocker
-clusterapp --> ntp
+resourcelocker --> resourcelockerfolder
+resourcelockerfolder --> resourcelockerapp : Deploys
+resourcelockerapp --> resourcelockerappfolder : kustomize build
+
 
 note top of configmanager
 	ArgoCD application that deploys other ArgoCD
@@ -69,6 +93,18 @@ end note
 note top of clusterapp
 	Kustomize configuration of all resources to be deployed.
 	Resources are other ArgoCD applications.
+end note
+
+note left of oauth
+	App of Apps
+end note
+
+note left of oauthfolder
+	Definition of ArgoCD application
+end note
+
+note left of oauthapp
+	ArgoCD application deploying a single component
 end note
 @enduml
   #+end_src
