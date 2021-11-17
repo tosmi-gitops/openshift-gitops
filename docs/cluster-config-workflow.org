@@ -1,4 +1,9 @@
-* Basic cluster configuration workflow
+*  Cluster configuration workflow
+
+To configure an OpenShift cluster we need to
+
+- deploy the GitOps Operator to the cluster
+- deploy the cluster configuration via ArgoCD
 
 ** Bootstrapping the GitOps operator
 
