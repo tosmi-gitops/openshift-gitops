@@ -1,0 +1,18 @@
+* Basic cluster configuration workflow
+
+  #+begin_src plantuml :file cluster-config-workflow.png
+title Cluster Configuration Workflow
+
+actor User
+file "00-deploy-gitops.sh" as script
+component "bootstrap/overlays/local.ocp/cluster-config-manager" as cfgman
+collections "clusters/local.ocp/argocd/apps/cluster/overlays/default" as default
+
+
+User -> script : Executes
+script -> cfgman : Kustomize
+cfgman -> default
+  #+end_src
+
+  #+RESULTS:
+  [[file:cluster-config-workflow.png]]
