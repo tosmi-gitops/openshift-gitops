@@ -1,28 +1,40 @@
 
 # Table of Contents
 
-1.  [Basic cluster configuration workflow](#org59fcb4d)
-    1.  [Bootstrapping GitOps operator](#org90f7c20)
-    2.  [Deploying the cluster configuration](#org10abe09)
+1.  [Cluster configuration workflow](#org3bc8118)
+    1.  [Bootstrapping the GitOps operator](#orgdf98772)
+    2.  [Deploying the cluster configuration](#org094dc8c)
 
 
-<a id="org59fcb4d"></a>
+<a id="org3bc8118"></a>
 
-# Basic cluster configuration workflow
+# Cluster configuration workflow
+
+To configure an OpenShift cluster we need to
+
+-   deploy the GitOps Operator to the cluster
+-   deploy the cluster configuration via ArgoCD
 
 
-<a id="org90f7c20"></a>
+<a id="orgdf98772"></a>
 
-## Bootstrapping GitOps operator
+## Bootstrapping the GitOps operator
+
+First we need to bootstrap ArgoCD via the OpenShift GitOps operator:
 
 ![img](gitops-bootstrap.png)
 
 
-<a id="org10abe09"></a>
+<a id="org094dc8c"></a>
 
 ## Deploying the cluster configuration
 
 Because we deployed the GitOps operator in the previous step, we are now
-able to create ArgoCD applications (and [App of Apps](https://argo-cd.readthedocs.io/en/stable/operator-manual/declarative-setup/#app-of-apps)).
+able to create ArgoCD applications.
+
+We leverage the [App of Apps](https://argo-cd.readthedocs.io/en/stable/operator-manual/declarative-setup/#app-of-apps) pattern. A cluster definition contains an
+ArgoCD App of Apps that deploys applications managing a single components.
+
+Sounds crazy? Yes, indeed. A picture is worth more than a thousand words:
 
 ![img](cluster-config-workflow.png)
