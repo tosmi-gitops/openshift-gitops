@@ -12,7 +12,7 @@ spec:
   project: cluster-config
   source:
     path: clusters/local.ocp/argocd/apps/cluster/
-    repoURL: https://github.com/tosmi/openshift-gitops.git
+    repoURL: https://github.com/rhatservices/openshift-gitops.git
     targetRevision: master
   syncPolicy:
     automated:
