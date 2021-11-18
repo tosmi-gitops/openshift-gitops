@@ -13,8 +13,9 @@ spec:
   source:
     path: clusters/local.ocp/argocd/apps/cluster/
     repoURL: https://github.com/rhatservices/openshift-gitops.git
-    targetRevision: master
+    targetRevision: main
   syncPolicy:
-    automated:
-      prune: false
-      selfHeal: true
+    # currently we do not want autosync
+    # automated:
+    #   prune: false
+    #   selfHeal: true

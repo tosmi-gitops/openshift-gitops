@@ -15,7 +15,7 @@ spec:
   source:
     path: components/configuration/oauth/overlays/htpasswd
     repoURL: https://github.com/rhatservices/openshift-gitops.git
-    targetRevision: master
+    targetRevision: main
   syncPolicy:
-    automated:
-      selfHeal: true
+    # automated:
+    #   selfHeal: true
