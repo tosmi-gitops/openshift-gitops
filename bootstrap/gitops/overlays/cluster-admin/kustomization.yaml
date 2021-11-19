@@ -3,5 +3,8 @@ kind: Kustomization
 
 namespace: openshift-operators
 
+bases:
+  - ../../base
+
 resources:
-  - ../../../components/apps/gitops-operator/base
+  - cluster-admin-rolebinding.yaml
