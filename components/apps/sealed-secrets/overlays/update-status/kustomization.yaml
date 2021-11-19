@@ -4,7 +4,7 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 namespace: sealed-secrets
 
 # Include the base Sealed Secrets manifests.
-bases:
+resources:
   - ../../base
 
 # the sealed secret controller supports updating the status:
