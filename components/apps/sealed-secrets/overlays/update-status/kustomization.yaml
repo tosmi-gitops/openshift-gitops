@@ -4,8 +4,6 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 namespace: sealed-secrets
 
 # Include the base Sealed Secrets manifests.
-resources:
-  - ../../base
 
 # the sealed secret controller supports updating the status:
 # field of sealedsecrets starting with version 0.12.0
@@ -14,7 +12,7 @@ resources:
 # for more info.
 # with 0.17.0 this is no longer required, update-status becomes the default
 # as of 2021/11/18 0.17.0 is released but artifacts are missing.
-patchesJson6902:
+patches:
 - target:
     version: v1
     group: apps
