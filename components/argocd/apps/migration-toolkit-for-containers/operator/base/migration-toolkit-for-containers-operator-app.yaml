@@ -9,7 +9,7 @@ metadata:
   name: mtc-operator
 spec:
   destination:
-    namespace: open-cluster-management
+    namespace: openshift-migration
     server: https://kubernetes.default.svc
   project: cluster-config
   source:

@@ -1,21 +1,21 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  annotations:
-    # argocd.argoproj.io/compare-options: IgnoreExtraneous
-    argocd.argoproj.io/sync-wave: '4'
+  name: cluster-config-manager
+  namespace: openshift-gitops
   labels:
     gitops.ownedBy: cluster-config
-  name: mtc-controller
 spec:
   destination:
-    namespace: openshift-migration
+    namespace: openshift-gitops
     server: https://kubernetes.default.svc
   project: cluster-config
   source:
-    path: components/apps/migration-toolkit-for-containers/controller/base
+    path: clusters/rhpds.mtc/argocd/apps/cluster/
     repoURL: https://github.com/rhatservices/openshift-gitops.git
     targetRevision: main
   syncPolicy:
+    # currently we do not want autosync
     # automated:
+    #   prune: false
     #   selfHeal: true

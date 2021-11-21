@@ -4,4 +4,4 @@ kind: Kustomization
 namespace: open-cluster-managment
 
 resources:
-- advanced-cluster-manager-operator-app.yaml
+- migration-toolkit-for-containers-operator-app.yaml
