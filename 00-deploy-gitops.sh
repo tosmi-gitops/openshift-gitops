@@ -16,6 +16,18 @@ function deploy() {
     $KUSTOMIZE build bootstrap/gitops/overlays/"$OVERLAY" | oc apply -f -
 }
 
+function wait_for_route() {
+    echo "Waiting for openshift-gitops route..."
+
+    # XXX actually we could check if the route is created and the status but
+    # XXX -ETOOLAZY
+    sleep 5
+
+    GITOPS_HOST=$(oc get route -n openshift-gitops openshift-gitops-server -o jsonpath="{.spec.host}")
+    GITOPS_URL="https://${GITOPS_HOST}"
+    echo "Go to ${GITOPS_URL} and log in with your openshift credentials to start using GitOps!"
+}
+
 if [ "$OVERLAY" == "default" ]; then
 
     cat<<EOF
@@ -34,3 +46,4 @@ EOF
 fi
 
 deploy
+wait_for_route

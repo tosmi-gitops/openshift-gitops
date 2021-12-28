@@ -5,10 +5,11 @@ namespace: openshift-gitops
 
 resources:
 
-- ../../../../../components/argocd/apps/oauth/base
+# - ../../../../../components/argocd/apps/oauth/base
 - ../../../../../components/argocd/apps/sealed-secrets/base
-- ../../../../../components/argocd/apps/advanced-cluster-manager/operator/base
+- ../../../../../components/argocd/apps/advanced-cluster-manager/operator/overlays/release-2.4
 - ../../../../../components/argocd/apps/advanced-cluster-manager/hub/base
+- ../../../../../components/argocd/apps/advanced-cluster-manager/observability/base
 
 # - ../../../../../../../components/argocd/apps/sealed-secrets/base
 # - ../../../clusterversion/base
