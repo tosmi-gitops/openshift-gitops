@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  annotations:
+    openshift.io/description: "Application GitOps for rolling out Applications"
+    openshift.io/display-name: "Application Gitops"
+  labels:
+    kubernetes.io/metadata.name: application-gitops
+    openshift.io/cluster-monitoring: "true"
+  name: application-gitops

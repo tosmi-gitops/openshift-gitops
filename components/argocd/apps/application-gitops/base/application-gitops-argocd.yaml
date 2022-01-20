@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  annotations:
+    argocd.argoproj.io/compare-options: IgnoreExtraneous
+    argocd.argoproj.io/sync-wave: '4'
+  labels:
+    gitops.ownedBy: cluster-config
+  name: application-gitops
+spec:
+  destination:
+    namespace: application-gitops
+    server: https://kubernetes.default.svc
+  project: cluster-config
+  source:
+    path: components/apps/application-gitops/overlays/default
+    repoURL: https://github.com/rhatservices/openshift-gitops.git
+    targetRevision: main
+  syncPolicy:
+    # automated:
+    #   selfHeal: true
