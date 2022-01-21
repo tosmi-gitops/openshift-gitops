@@ -13,7 +13,7 @@ spec:
     server: https://kubernetes.default.svc
   project: cluster-config
   source:
-    path: components/configuration/oauth/overlays/htpasswd
+    path: components/configuration/oauth/base
     repoURL: https://github.com/rhatservices/openshift-gitops.git
     targetRevision: main
   syncPolicy:
