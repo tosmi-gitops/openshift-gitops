@@ -1,0 +1,29 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ArgoCD
+metadata:
+  name: application-gitops
+  namespace: application-gitops
+spec:
+  rbac:
+    defaultPolicy: role:readonly
+    policy: |
+      p, role:prod-deployer, applications, create, production/*, allow
+      p, role:prod-deployer, applications, delete, production/*, allow
+      p, role:prod-deployer, applications, get, production/*, allow
+      p, role:prod-deployer, applications, override, production/*, allow
+      p, role:prod-deployer, applications, sync, production/*, allow
+      p, role:prod-deployer, applications, update, production/*, allow
+      p, role:prod-deployer, projects, get, production, allow
+
+      p, role:test-deployer, applications, create, test/*, allow
+      p, role:test-deployer, applications, delete, test/*, allow
+      p, role:test-deployer, applications, get, test/*, allow
+      p, role:test-deployer, applications, override, test/*, allow
+      p, role:test-deployer, applications, sync, test/*, allow
+      p, role:test-deployer, applications, update, test/*, allow
+      p, role:test-deployer, projects, get, test, allow
+
+      g, application-admins, role:admin
+      g, production, role: prod-deployer
+      g, test, role: test-deployer
+    scopes: '[groups]'
