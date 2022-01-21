@@ -11,4 +11,4 @@ patches:
         value: components/configuration/oauth/overlays/ldap-htpasswd
     target:
       kind: Application
-      name: configure-authentication
+      name: config-authentication
