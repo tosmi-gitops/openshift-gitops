@@ -1,0 +1,21 @@
+- op: add
+  path: /spec/identityProviders/-
+  value:
+    mappingMethod: claim
+    name: ldapidp
+    type: LDAP
+    ldap:
+      attributes:
+        email:
+        - mail
+        id:
+        - dn
+        name:
+        - cn
+        preferredUsername:
+        - uid
+      bindDN: uid=openshift,cn=sysaccounts,cn=etc,dc=lan,dc=stderr,dc=at
+      bindPassword:
+        name: ldap-secret
+      insecure: true
+      url: ldap://idm.lan.stderr.at/cn=users,cn=accounts,dc=lan,dc=stderr,dc=at?uid
