@@ -7,7 +7,7 @@ resources:
 
 - ../../../../../components/argocd/apps/oauth/overlays/ldap-htpasswd
 - ../../../../../components/argocd/apps/sealed-secrets/base
-- ../../../../../components/argocd/apps/application-gitops/overlays/default
+- ../../../../../components/argocd/apps/application-gitops/base
 
 # - ../../../../../../../components/argocd/apps/sealed-secrets/base
 # - ../../../clusterversion/base
