@@ -3,7 +3,7 @@ kind: Kustomization
 
 resources:
 - sealed-secrets-namespace.yaml
-- https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.16.0/controller.yaml
+- https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.17.2/controller.yaml
 
 # not sure if we need this
 # afaik this enables the anyuid scc for the sealed-secrets-controller
@@ -11,11 +11,14 @@ resources:
 
 # upstream uses v1beta1, with kubernetes 1.22 this got deprecated
 # so let's use v1 instead of v1beta1
-patches:
-- patch: |-
-    - op: replace
-      path: "/apiVersion"
-      value: rbac.authorization.k8s.io/v1
-  target:
-    group: rbac.authorization.k8s.io
-    version: v1beta1
+#
+# this is no longer required for >= 0.17
+#
+# patches:
+# - patch: |-
+#     - op: replace
+#       path: "/apiVersion"
+#       value: rbac.authorization.k8s.io/v1
+#   target:
+#     group: rbac.authorization.k8s.io
+#     version: v1beta1
