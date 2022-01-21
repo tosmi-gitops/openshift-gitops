@@ -23,6 +23,7 @@ spec:
       p, role:test-deployer, applications, update, test/*, allow
       p, role:test-deployer, projects, get, test, allow
 
+      g, cluster-admins, role:admin
       g, application-admins, role:admin
       g, production, role: prod-deployer
       g, test, role: test-deployer
