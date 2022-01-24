@@ -25,6 +25,6 @@ spec:
 
       g, cluster-admins, role:admin
       g, application-admins, role:admin
-      g, production, role: prod-deployer
-      g, test, role: test-deployer
+      g, production, role:prod-deployer
+      g, test, role:test-deployer
     scopes: '[groups]'
