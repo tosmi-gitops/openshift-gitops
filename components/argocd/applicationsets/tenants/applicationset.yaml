@@ -1,0 +1,31 @@
+kind: ApplicationSet
+metadata:
+  name: tenants
+  namespace: openshift-gitops
+spec:
+  generators:
+    - git: https://github.com/rhatservices/openshift-gitops.git
+      revision: main
+      directories:
+        - tenants/*
+  template:
+    metadata:
+      name: '{{ path.basename }}'
+    spec:
+      project: tenants
+      # syncPolicy:
+      #   automated:
+      #     prune: true
+      #     selfHeal: true
+      #   retry:
+      #     limit: 15
+      #     backoff:
+      #       duration: 15s
+      #       factor: 2
+      #       maxDuration: 5m
+      source:
+        repoURL: https://github.com/rhatservices/openshift-gitops.git
+        targetRevision: main
+        path: '{{ path }}'
+      destination:
+        server: https://kubernetes.default.svc
