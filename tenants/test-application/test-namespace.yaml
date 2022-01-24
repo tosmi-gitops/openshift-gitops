@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  annotations:
+    openshift.io/description: "A simple test application"
+    openshift.io/display-name: "Test Application"
+  labels:
+    argocd.argoproj.io/managed-by: application-gitops
+  name: test-application
