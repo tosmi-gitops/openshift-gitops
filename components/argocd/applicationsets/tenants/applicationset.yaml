@@ -5,10 +5,11 @@ metadata:
   namespace: openshift-gitops
 spec:
   generators:
-    - git: https://github.com/rhatservices/openshift-gitops.git
-      revision: main
-      directories:
-        - tenants/*
+    - git:
+        repoURL: https://github.com/rhatservices/openshift-gitops.git
+        revision: main
+        directories:
+          - path: tenants/*
   template:
     metadata:
       name: '{{ path.basename }}'
