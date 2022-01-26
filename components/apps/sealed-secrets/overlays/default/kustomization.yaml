@@ -6,5 +6,6 @@ namespace: sealed-secrets
 resources:
   - ../../base
   - ../anyuid
+
   # update status is not required with version >= 0.17
   # - ../update-status
