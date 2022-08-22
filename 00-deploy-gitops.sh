@@ -9,7 +9,6 @@ GITOPSNS="openshift-gitops"
 RED=$(tput setaf 1)
 NC=$(tput sgr0)
 
-
 function error() {
     echo "$1"
 
@@ -22,7 +21,7 @@ function deploy() {
 }
 
 function wait_for_namespace() {
-    printf "Waiting for ${GITOPSNS} namespace...\n"
+    printf "Waiting for %s...\n" ${GITOPSNS}
     while ! oc get ns | grep ${GITOPSNS}x >/dev/null; do
 	sleep 3
     done

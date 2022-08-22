@@ -5,6 +5,9 @@ set -euf -o pipefail
 TASK=${1:-usage}
 NAMESPACE=${2:-sealed-secrets}
 
+RED=$(tput setaf 1)
+NC=$(tput sgr0)
+
 function error {
     echo "ERROR: $1"
     exit 1
@@ -27,16 +30,17 @@ EOF
 
 function warning {
     cat<<EOF
-This will backup the current sealed secret master key to $HOME/.bitnami.
+
+This will backup the current sealed secret master key to ${RED}${HOME}/.bitnami${NC}.
 
 |-------------------------------------------------|
-| WARNING:                                        |
+| ${RED}WARNING:${NC}                                        |
 |                                                 |
 | With this key every sealed-secret stored in the |
 | current cluster can be decrypted.               |
 |-------------------------------------------------|
 
-A backup of this key is important, but it should propably *not* be
+A backup of this key is important, but it should propably ${RED}*not*${NC} be
 stored in $HOME.
 
 We will start the backup process in 5 seconds
@@ -46,31 +50,41 @@ EOF
     sleep 5
 }
 
+function clustername {
+    oc whoami --show-server | sed -e 's|https://|| ; s|:6443||'
+}
+
 function backup {
     warning
 
-    echo "Creating backup of master key from sealed-secrets-controller in namespace ${NAMESPACE} and copying it to ~/.bitnami"
+    CLUSTERNAME=$(clustername)
+    [ -z "$CLUSTERNAME" ] && error "Could not get name of cluster"
+
+    echo "Creating backup for cluster ${RED}${CLUSTERNAME}${NC} of sealed-secrets-controller in namespace ${RED}${NAMESPACE}${NC} and copying it to ~/.bitnami"
     mkdir -m 700 -p ~/.bitnami
 
     SECRET=$(oc get secret -n "$NAMESPACE" -l sealedsecrets.bitnami.com/sealed-secrets-key=active -o name)
     [ -z "$SECRET" ] && error "Could not find active sealed secret master key in namespace ${NAMESPACE}"
 
-    oc get "$SECRET" -n "$NAMESPACE" -o yaml >  ~/.bitnami/sealed-secrets-secret.yaml
+    oc get "$SECRET" -n "$NAMESPACE" -o yaml >  ~/.bitnami/${CLUSTERNAME}-sealed-secrets-secret.yaml
 
     echo "Get the public key from the Sealed Secrets secret."
-    oc get "$SECRET" -n "$NAMESPACE" -o jsonpath='{.data.tls\.crt}' | base64 --decode > ~/.bitnami/publickey.pem
+    oc get "$SECRET" -n "$NAMESPACE" -o jsonpath='{.data.tls\.crt}' | base64 --decode > ~/.bitnami/${CLUSTERNAME}-publickey.pem
 }
 
 function restore {
-    BACKUP_FILE="${HOME}/.bitnami/sealed-secrets-secret.yaml"
+    CLUSTERNAME=$(clustername)
+    [ -z "$CLUSTERNAME" ] && error "Could not get name of cluster"
+
+    BACKUP_FILE="${HOME}/.bitnami/${CLUSTERNAME}-sealed-secrets-secret.yaml"
 
     [ ! -f "${BACKUP_FILE}" ] && error "Could not find sealed secret backup ${BACKUP_FILE}"
 
     echo "* Deleting existing secret."
     oc delete secret -n sealed-secrets -l sealedsecrets.bitnami.com/sealed-secrets-key
 
-    echo "* Creating secret from local backup in $HOME~/.bitnami"
-    oc create -f "$HOME"/.bitnami/sealed-secrets-secret.yaml -n sealed-secrets
+    echo "* Restoring secret for cluster ${RED}${CLUSTERNAME}${NC} from local backup in $HOME~/.bitnami"
+    oc create -f "$HOME"/.bitnami/${CLUSTERNAME}-sealed-secrets-secret.yaml -n sealed-secrets
 
     echo "* Restarting Sealed Secrets controller."
     oc delete pod -l name=sealed-secrets-controller -n sealed-secrets
