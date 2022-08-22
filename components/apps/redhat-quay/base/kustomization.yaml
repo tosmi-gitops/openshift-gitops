@@ -1,0 +1,8 @@
+kind: Kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+
+resources:
+  - namespace.yaml
+  # this is currently missing
+  # - initial-config-bundle-sealed-secret.yaml
+  - registry.yaml
