@@ -1,0 +1,40 @@
+apiVersion: noobaa.io/v1alpha1
+kind: NooBaa
+metadata:
+  labels:
+    app: noobaa
+  name: noobaa
+  namespace: openshift-storage
+spec:
+  coreResources:
+    limits:
+      cpu: "1"
+      memory: 4Gi
+    requests:
+      cpu: "1"
+      memory: 4Gi
+  dbResources:
+    limits:
+      cpu: 500m
+      memory: 4Gi
+    requests:
+      cpu: 500m
+      memory: 4Gi
+  dbStorageClass: gp2
+  dbType: postgres
+  dbVolumeResources:
+    requests:
+      storage: 50Gi
+  endpoints:
+    maxCount: 2
+    minCount: 1
+    resources:
+      limits:
+        cpu: "1"
+        memory: 2Gi
+      requests:
+        cpu: "1"
+        memory: 2Gi
+  labels:
+    monitoring:
+      noobaa.io/managedBy: ocs-storagecluster
