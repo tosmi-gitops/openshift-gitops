@@ -26,7 +26,7 @@ function deploy() {
 
 function wait_for_namespace() {
     printf "Waiting for %s...\n" ${GITOPSNS}
-    while ! oc get ns | grep ${GITOPSNS}x >/dev/null; do
+    while ! oc get ns | grep ${GITOPSNS} >/dev/null; do
 	sleep 3
     done
 }
@@ -56,5 +56,6 @@ EOF
     sleep 5
 fi
 
+verify
 deploy
 wait_for_route
