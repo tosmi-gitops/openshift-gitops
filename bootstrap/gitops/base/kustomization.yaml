@@ -4,4 +4,4 @@ kind: Kustomization
 namespace: openshift-operators
 
 resources:
-  - ../../../components/apps/gitops-operator/base
+  - ../../../components/apps/gitops-operator/overlays/latest
