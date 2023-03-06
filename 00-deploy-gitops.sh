@@ -15,6 +15,10 @@ function error() {
     exit 1
 }
 
+function verify() {
+    oc whoami > /dev/null 2>&1 || error "You need a valid login session to the cluster. Please run 'oc login...'"
+}
+
 function deploy() {
     $KUSTOMIZE >/dev/null 2>&1 || error "Could not execute kustomize binary!"
     $KUSTOMIZE build bootstrap/gitops/overlays/"$OVERLAY" | oc apply -f -
