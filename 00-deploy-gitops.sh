@@ -25,14 +25,21 @@ function deploy() {
 }
 
 function wait_for_namespace() {
-    printf "Waiting for %s...\n" ${GITOPSNS}
+    printf "Waiting for namespace %s..." ${GITOPSNS}
     while ! oc get ns | grep ${GITOPSNS} >/dev/null; do
 	sleep 3
     done
+    printf " FOUND\n"
 }
 
 function wait_for_route() {
     wait_for_namespace
+
+    printf "Waiting for openshift-gitops route in %s namespace..." ${GITOPSNS}
+    until oc get route -n "${GITOPSNS}" openshift-gitops-server >/dev/null 2>&1; do
+	sleep 3
+    done
+    printf " FOUND\n"
 
     GITOPS_HOST=$(oc get route -n ${GITOPSNS} openshift-gitops-server -o jsonpath="{.spec.host}")
     GITOPS_URL="https://${GITOPS_HOST}"
