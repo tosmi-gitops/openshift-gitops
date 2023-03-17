@@ -8,7 +8,7 @@ patches:
   - patch: |-
       - op: replace
         path: /spec/source/path
-        value: components/configuration/oauth/overlays/ldap-htpasswd
+        value: components/configuration/oauth/overlays/htpasswd
     target:
       kind: Application
       name: config-authentication
