@@ -18,6 +18,7 @@ secretGenerator:
     files:
       - htpasswd
     options:
+      disableNameSuffixHash: true
       annotations:
         argocd.argoproj.io/sync-options: Prune=false
         argocd.argoproj.io/compare-options: IgnoreExtraneous
