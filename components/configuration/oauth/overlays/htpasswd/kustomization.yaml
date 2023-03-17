@@ -3,7 +3,6 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 
 resources:
   - ../../base
-  - htpasswd-secret.yaml
   - root-cluster-admin.yaml
 patches:
   - target:
@@ -12,3 +11,13 @@ patches:
       kind: OAuth
       name: cluster
     path: oauth-htpasswd-patch.yaml
+
+secretGenerator:
+  - name: htpasswd-secret
+    namespace: openshift-config
+    files:
+      - htpasswd
+    options:
+      annotations:
+        argocd.argoproj.io/sync-options: Prune=false
+        argocd.argoproj.io/compare-options: IgnoreExtraneous
