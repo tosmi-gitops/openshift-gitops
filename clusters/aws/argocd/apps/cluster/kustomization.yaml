@@ -5,9 +5,10 @@ namespace: openshift-gitops
 
 resources:
 
-- ../../../../../components/argocd/apps/oauth/overlays/ldap-htpasswd
-- ../../../../../components/argocd/apps/sealed-secrets/base
-- ../../../../../components/argocd/applicationsets/tenants/
+- ../../../../../components/argocd/apps/oauth/overlays/htpasswd
+
+# - ../../../../../components/argocd/apps/sealed-secrets/base
+# - ../../../../../components/argocd/applicationsets/tenants/
 
 # - ../../../../../../../components/argocd/apps/sealed-secrets/base
 # - ../../../clusterversion/base
