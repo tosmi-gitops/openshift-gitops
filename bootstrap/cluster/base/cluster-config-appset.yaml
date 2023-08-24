@@ -1,0 +1,41 @@
+kind: ApplicationSet
+metadata:
+  name: cluster-config
+  namespace: openshift-gitops
+spec:
+  syncPolicy:
+    preserveResourcesOnDeletion: true
+    applicationsSync: create-update
+  generators:
+  - matrix:
+      generators:
+      - git:
+          namePrefix: app
+          repoURL:
+          revision: main
+          directories:
+            - path: components/apps/*
+            - path: components/configuration/*
+      - git:
+          namePrefix: clustername
+          repoURL:
+          revision: main
+          directories:
+            - path: components/apps/{{app.path.basename}}/overlays/*
+            - path: components/configuration/{{app.path.basename}}/overlays/*
+
+      # - clusters:
+      #     selector:
+      #       matchLabels:
+      #         argocd.argoproj.io/secret-type: cluster
+  template:
+    metadata:
+      name: '{{app.path.basenem}}-{{clustername.path.basename}}'
+    spec:
+      project: '{{cluster}}'
+      source:
+        repoURL: URL
+        targetRevision: main
+        path: '{{app.path}}/overlays/{{cluster.basename}}'
+      destination:
+        name: '{{cluster}}'
