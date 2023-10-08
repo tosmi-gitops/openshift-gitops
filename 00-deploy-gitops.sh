@@ -21,7 +21,7 @@ function verify() {
 
 function deploy() {
     $KUSTOMIZE >/dev/null 2>&1 || error "Could not execute kustomize binary!"
-    $KUSTOMIZE build bootstrap/gitops/overlays/"$OVERLAY" | oc apply -f -
+    $KUSTOMIZE build bootstrap/gitops/overlays/"$OVERLAY" | oc apply --server-side -f -
 }
 
 function wait_for_namespace() {
