@@ -1,14 +1,17 @@
+---
 apiVersion: argoproj.io/v1alpha1
 kind: AppProject
 metadata:
-  name: cluster-config
+  name: replaceme
   namespace: openshift-gitops
 spec:
   clusterResourceWhitelist:
-  - group: '*'
-    kind: '*'
+    - group: '*'
+      kind: '*'
   destinations:
-  - namespace: '*'
-    server: '*'
+    - namespace: '*'
+      name: 'replaceme'
+    - namespace: 'openshift-gitops'
+      name: 'in-cluster'
   sourceRepos:
-  - '*'
+    - https://github.com/tosmi-gitops/openshift-gitops.git
