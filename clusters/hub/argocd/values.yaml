@@ -41,6 +41,7 @@ applications:
   oauth-htpasswd:
     annotations:
       argocd.argoproj.io/sync-wave: '4'
+      argocd.argoproj.io/compare-options: IgnoreExtraneous
     destination:
       namespace: default
       name: in-cluster
