@@ -4,7 +4,7 @@ clustername: &clustername hub
 default:
   app:
     enabled: true
-    enableAutoSync: true
+    enableAutoSync: false
     autoSyncPrune: false
     project: cluster-config-hub
     destination:
