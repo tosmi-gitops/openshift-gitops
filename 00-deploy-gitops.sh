@@ -21,7 +21,11 @@ function verify() {
 
 function deploy() {
     $KUSTOMIZE >/dev/null 2>&1 || error "Could not execute kustomize binary!"
-    $KUSTOMIZE build bootstrap/gitops/overlays/"$OVERLAY" | oc apply --server-side -f -
+    $KUSTOMIZE build bootstrap/gitops/overlays/"$OVERLAY" | oc apply -f -
+}
+
+function enable_helm() {
+    $KUSTOMIZE build components/configuration/openshift-gitops/base | oc apply --server-side -f -
 }
 
 function wait_for_namespace() {
@@ -66,3 +70,4 @@ fi
 verify
 deploy
 wait_for_route
+enable_helm
