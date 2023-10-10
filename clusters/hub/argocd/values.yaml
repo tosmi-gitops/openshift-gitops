@@ -74,3 +74,12 @@ applications:
       name: in-cluster
     source:
       path: components/configuration/openshift-gitops/base
+
+  event-router:
+    annotations:
+      argocd.argoproj.io/sync-wave: '4'
+    destination:
+      namespace: openshift-logging
+      name: in-cluster
+    source:
+      path: components/apps/event-router/base
