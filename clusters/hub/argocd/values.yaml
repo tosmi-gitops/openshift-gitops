@@ -83,3 +83,5 @@ applications:
       name: in-cluster
     source:
       path: components/apps/event-router/base
+    syncOptions:
+      - CreateNamespace=true
