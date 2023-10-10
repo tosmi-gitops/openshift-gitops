@@ -1,8 +1,9 @@
+---
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
-  - ../../../../components/apps/console-customization/overlays/hub
+  - ../../../../components/configuration/console-customization/overlays/hub
 
 patches:
   # Fix the cluster name in the header bar

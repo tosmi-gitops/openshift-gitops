@@ -55,7 +55,7 @@ applications:
       namespace: default
       name: in-cluster
     source:
-      path: clusters/hub/apps/console-customization
+      path: clusters/hub/configuration/console-customization
 
   groups:
     annotations:
