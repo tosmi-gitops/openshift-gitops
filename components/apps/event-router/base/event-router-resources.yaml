@@ -1,0 +1,75 @@
+---
+kind: ServiceAccount
+apiVersion: v1
+metadata:
+  name: eventrouter
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: event-reader
+rules:
+- apiGroups: [""]
+  resources: ["events"]
+  verbs: ["get", "watch", "list"]
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: event-reader-binding
+subjects:
+- kind: ServiceAccount
+  name: eventrouter
+roleRef:
+  kind: ClusterRole
+  name: event-reader
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: eventrouter
+data:
+  config.json: |-
+    {
+      "sink": "stdout"
+    }
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: eventrouter
+  labels:
+    component: "eventrouter"
+    logging-infra: "eventrouter"
+    provider: "openshift"
+spec:
+  selector:
+    matchLabels:
+      component: "eventrouter"
+      logging-infra: "eventrouter"
+      provider: "openshift"
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        component: "eventrouter"
+        logging-infra: "eventrouter"
+        provider: "openshift"
+      name: eventrouter
+    spec:
+      serviceAccount: eventrouter
+      containers:
+        - name: kube-eventrouter
+          image: "registry.redhat.io/openshift-logging/eventrouter-rhel8:v0.4"
+          imagePullPolicy: IfNotPresent
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+          volumeMounts:
+          - name: config-volume
+            mountPath: /etc/eventrouter
+      volumes:
+        - name: config-volume
+          configMap:
+            name: eventrouter
