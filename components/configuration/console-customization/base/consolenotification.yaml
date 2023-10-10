@@ -1,0 +1,9 @@
+apiVersion: console.openshift.io/v1
+kind: ConsoleNotification
+metadata:
+  name: cluster-indicator
+spec:
+  backgroundColor: # overwrite in overlay!
+  color: # overwrite in overlay!
+  location: BannerTop
+  text: # overwrite in overlay!
