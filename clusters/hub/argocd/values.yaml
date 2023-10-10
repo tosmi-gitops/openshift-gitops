@@ -47,3 +47,30 @@ applications:
       name: in-cluster
     source:
       path: components/configuration/oauth/overlays/htpasswd
+
+  console-customization:
+    annotations:
+      argocd.argoproj.io/sync-wave: '4'
+    destination:
+      namespace: default
+      name: in-cluster
+    source:
+      path: clusters/hub/apps/console-customization
+
+  groups:
+    annotations:
+      argocd.argoproj.io/sync-wave: '4'
+    destination:
+      namespace: default
+      name: in-cluster
+    source:
+      path: components/configuration/groups/overlays/hub
+
+  gitops-config:
+    annotations:
+      argocd.argoproj.io/sync-wave: '4'
+    destination:
+      namespace: default
+      name: in-cluster
+    source:
+      path: components/configuration/openshift-gitops/base
