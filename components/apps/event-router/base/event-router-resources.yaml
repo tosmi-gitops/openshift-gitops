@@ -1,4 +1,9 @@
 ---
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: openshift-logging
+---
 kind: ServiceAccount
 apiVersion: v1
 metadata:
