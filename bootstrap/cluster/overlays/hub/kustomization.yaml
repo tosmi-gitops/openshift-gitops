@@ -12,7 +12,7 @@ patches:
     patch: |-
       - op: replace
         path: /metadata/name
-        value: hub
+        value: cluster-config-hub
       - op: replace
         path: /spec/destinations/0/name
         value: in-cluster
@@ -32,7 +32,7 @@ patches:
         value: in-cluster
       - op: replace
         path: /spec/project
-        value: hub
+        value: cluster-config-hub
       - op: replace
         path: /spec/source/path
         value: clusters/hub/argocd
