@@ -1,0 +1,11 @@
+---
+kind: Kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+
+helmCharts:
+  - name: rhacs-full-stack
+    version: 1.0.30
+    # valuesFile: values.yaml
+    namespace: openshift-gitops
+    releaseName: rhacs-full-stack-1.0.30
+    repo: https://charts.stderr.at/
