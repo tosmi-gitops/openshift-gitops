@@ -10,8 +10,14 @@ function error() {
     exit 1
 }
 
-/usr/bin/env kustomize 2>&1 >/dev/null || error "Could not execute kustomize binary!"
+function usage() {
+    cat <<EOF
 
-[ "$OVERLAY" == "NONE" ] && error "You need to specify an overlay!"
+EOF
+}
+
+/usr/bin/env kustomize >/dev/null 2>&1 || error "Could not execute kustomize binary!"
+
+[ "$OVERLAY" == "NONE" ] && error "You need to specify a cluster name (overlay)!"
 
 /usr/bin/env kustomize build bootstrap/cluster/overlays/"$OVERLAY" | oc apply -f -
