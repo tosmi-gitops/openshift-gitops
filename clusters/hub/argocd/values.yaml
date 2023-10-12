@@ -85,3 +85,14 @@ applications:
       path: components/apps/event-router/base
     syncOptions:
       - CreateNamespace=true
+
+  advanced-cluster-security:
+    annotations:
+      argocd.argoproj.io/sync-wave: '4'
+    destination:
+      namespace: stackrox
+      name: in-cluster
+    source:
+      path: components/apps/advanced-cluster-security/base
+    syncOptions:
+      - CreateNamespace=true
