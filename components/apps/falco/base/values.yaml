@@ -1,11 +1,9 @@
-falco:
-  docker:
-    enabled: false
-  jsonOutput: true
-  driver:
-    enabled: true
+driver:
+  loader:
     kind: ebpf
+    enabled: false
+
 falcosidekick:
   enabled: false
   webui:
-    enabled=true
+    enabled: true
