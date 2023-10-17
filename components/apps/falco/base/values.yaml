@@ -1,7 +1,13 @@
 driver:
-  loader:
-    kind: ebpf
-    enabled: true
+  kind: ebpf
+  # loader:
+  #   enabled: false
+
+falco:
+  json_output: true
+  json_include_output_property: true
+  log_syslog: false
+  log_level: info
 
 falcosidekick:
   enabled: false
