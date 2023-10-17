@@ -1,0 +1,9 @@
+falco:
+  docker:
+    enabled: false
+  jsonOutput: true
+
+falcosidekick:
+  enabled: false
+  webui:
+    enabled=true
