@@ -17,6 +17,11 @@ rhacs:
         requests:
           cpu: "0.5Mi"
           memory: "1Gi"
+      autoscaling:
+        status: "Disabled"
+        max: 1
+        min: 1
+        replicas: 1
     db:
       resources:
         requests:
