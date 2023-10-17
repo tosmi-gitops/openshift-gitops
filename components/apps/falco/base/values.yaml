@@ -2,7 +2,9 @@ falco:
   docker:
     enabled: false
   jsonOutput: true
-
+  driver:
+    enabled: true
+    kind: ebpf
 falcosidekick:
   enabled: false
   webui:
