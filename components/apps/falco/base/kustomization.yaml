@@ -11,6 +11,8 @@ helmCharts:
     namespace: openshift-gitops
     releaseName: falco
     repo: https://falcosecurity.github.io/charts
+    apiVersions:
+      - security.openshift.io/v1
 
 resources:
   - namespace.yaml
