@@ -1,7 +1,7 @@
 driver:
   loader:
     kind: ebpf
-    enabled: false
+    enabled: true
 
 falcosidekick:
   enabled: false
