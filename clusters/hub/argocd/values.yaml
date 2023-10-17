@@ -93,6 +93,6 @@ applications:
       namespace: stackrox
       name: in-cluster
     source:
-      path: components/apps/advanced-cluster-security/base
+      path: components/apps/advanced-cluster-security/overlays/small
     syncOptions:
       - CreateNamespace=true
