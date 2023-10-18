@@ -16,5 +16,6 @@ helmCharts:
 
 resources:
   - namespace.yaml
+  - falcosidekick-any-uid-scc.yaml
   - master-machineconfig.yaml
   - worker-machineconfig.yaml

@@ -1,0 +1,15 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: falco-scc:privileged
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: system:openshift:scc:nonroot
+subjects:
+- kind: ServiceAccount
+  name: falco-falcosidekick
+  namespace: falco
+- kind: ServiceAccount
+  name: falco-falcosidekick-ui
+  namespace: falco
