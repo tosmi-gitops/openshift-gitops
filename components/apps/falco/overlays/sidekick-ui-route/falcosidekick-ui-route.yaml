@@ -1,0 +1,16 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: falco-falcosidekick-ui
+  namespace: falco
+spec:
+  host: falcosidekick-ui.apps.hub.aws.tntinfra.net
+  port:
+    targetPort: http
+  tls:
+    termination: edge
+  to:
+    kind: Service
+    name: falco-falcosidekick-ui
+    weight: 100
+  wildcardPolicy: None
