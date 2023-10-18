@@ -16,6 +16,5 @@ helmCharts:
 
 resources:
   - namespace.yaml
-  - privileged-scc-clusterrolebinding.yaml
   - master-machineconfig.yaml
   - worker-machineconfig.yaml
