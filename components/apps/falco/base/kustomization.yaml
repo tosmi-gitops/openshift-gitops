@@ -8,7 +8,7 @@ helmCharts:
   - name: falco
     version: 3.8.0
     valuesFile: values.yaml
-    namespace: openshift-gitops
+    namespace: falco
     releaseName: falco
     repo: https://falcosecurity.github.io/charts
     apiVersions:
