@@ -1,3 +1,4 @@
+---
 driver:
   kind: ebpf
   loader:
@@ -13,23 +14,30 @@ falco:
   json_include_output_property: true
   log_syslog: false
   log_level: info
-
+  # overwrite the default rules list, currently we only want our
+  # custom rules to be active
+  rules_file:
+    - /etc/falco/extra-rules.d
+    - /etc/falco/rules.d
 falcosidekick:
   enabled: true
   webui:
     enabled: true
 
-customRules:
-  rules-tty-commands.yaml: |-
-    - rule: Log commands in an interactive shell
-      desc: >-
-        Log all commands executed in an container that has a tty attached. Taken from
-        https://github.com/falcosecurity/falco/issues/2338#issuecomment-1631308628.
-      condition: >-
-        spawned_process
-        and container
-        and proc.tty != 0
-        and proc.is_vpgid_leader=true
-      output: Executed command in container (proc_exe=%proc.exe proc_sname=%proc.sname gparent=%proc.aname[2] proc_exe_ino_ctime=%proc.exe_ino.ctime proc_exe_ino_mtime=%proc.exe_ino.mtime proc_exe_ino_ctime_duration_proc_start=%proc.exe_ino.ctime_duration_proc_start proc_cwd=%proc.cwd container_start_ts=%container.start_ts evt_type=%evt.type user=%user.name user_uid=%user.uid user_loginuid=%user.loginuid process=%proc.name proc_exepath=%proc.exepath parent=%proc.pname command=%proc.cmdline terminal=%proc.tty exe_flags=%evt.arg.flags %container.info)
-      priority: CRITICAL
-      tags: [custom_rule, container, process, tty]
+# Custom rules a now deploy via an extra configmap
+#
+# customRules:
+#   rules-tty-commands.yaml: |-
+#     - rule: Log commands in an interactive shell
+#       desc: >-
+#         Log all commands executed in a container that has a tty
+#         attached. Taken from
+#         https://github.com/falcosecurity/falco/issues/2338#issuecomment-1631308628.
+#       condition: >-
+#         spawned_process
+#         and container
+#         and proc.tty != 0
+#         and proc.is_vpgid_leader=true
+#       output: Executed command in container (proc_exe=%proc.exe proc_sname=%proc.sname gparent=%proc.aname[2] proc_exe_ino_ctime=%proc.exe_ino.ctime proc_exe_ino_mtime=%proc.exe_ino.mtime proc_exe_ino_ctime_duration_proc_start=%proc.exe_ino.ctime_duration_proc_start proc_cwd=%proc.cwd container_start_ts=%container.start_ts evt_type=%evt.type user=%user.name user_uid=%user.uid user_loginuid=%user.loginuid process=%proc.name proc_exepath=%proc.exepath parent=%proc.pname command=%proc.cmdline terminal=%proc.tty exe_flags=%evt.arg.flags %container.info)
+#       priority: CRITICAL
+#       tags: [custom_rule, container, process, tty]
