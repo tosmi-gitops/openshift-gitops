@@ -5,26 +5,26 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 resources:
   - ../sidekick-ui-route
 
-patches:
-  - patch: |-
-      apiVersion: apps/v1
-      kind: DaemonSet
-      metadata:
-        name: falco
-        namespace: falco
-      spec:
-        template:
-          spec:
-            containers:
-              - name: falco
-                volumeMounts:
-                  - mountPath: /etc/falco/extra-rules.d
-                    name: falco-extra-rules-volume
-            volumes:
-              - name: falco-extra-rules-volume
-                optional: true
-                configMap:
-                  name: falco-extra-rules
+# patches:
+#   - patch: |-
+#       apiVersion: apps/v1
+#       kind: DaemonSet
+#       metadata:
+#         name: falco
+#         namespace: falco
+#       spec:
+#         template:
+#           spec:
+#             containers:
+#               - name: falco
+#                 volumeMounts:
+#                   - mountPath: /etc/falco/extra-rules.d
+#                     name: falco-extra-rules-volume
+#             volumes:
+#               - name: falco-extra-rules-volume
+#                 optional: true
+#                 configMap:
+#                   name: falco-extra-rules
 
 configMapGenerator:
   - name: falco-extra-rules

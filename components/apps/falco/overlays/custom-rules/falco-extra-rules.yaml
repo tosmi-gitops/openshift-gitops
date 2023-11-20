@@ -41,7 +41,8 @@
 
 # Copy of the default falco rule, removed 'and not
 # user_expected_terminal_shell_in_container_conditions' from
-# condition:
+# condition, so whenever someone opens a shell in a container create
+# an event
 - rule: Terminal shell in container
   desc: >
     A shell was used as the entrypoint/exec point into a container with an attached terminal. Parent process may have
@@ -59,6 +60,12 @@
   priority: NOTICE
   tags: [maturity_stable, container, shell, mitre_execution, T1059]
 
+# Log all commands executed in an interactive shell inside a
+# container. This creates events for all processes created via execve
+# and execve.
+#
+# WARNING: this does not capture shell builtins. See the next rule for
+# a possible mitigation.
 - rule: Log commands in an interactive shell
   desc: >-
     Log all commands executed in a container that has a tty
@@ -73,6 +80,9 @@
   priority: CRITICAL
   tags: [custom_rule, container, process, tty]
 
+# As the rule above does NOT log shell builtins (e.g. echo <string> >
+# /etc/passwd), we audit all read and write requests in an interactive
+# shell inside container.
 - rule: Log read and write in container in an interactive shell
   desc: >-
     Log all read/write calls in a container if tere is an interactive
@@ -81,7 +91,48 @@
     (open_read or open_write)
     and container
     and proc.tty != 0
-    and proc.name in (shell_binaries)
+    and proc.is_vpgid_leader=true
   output: Read/Write in container (file=%fd.name fileraw=%fd.nameraw gparent=%proc.aname[2] ggparent=%proc.aname[3] gggparent=%proc.aname[4] evt_type=%evt.type user=%user.name user_uid=%user.uid user_loginuid=%user.loginuid process=%proc.name proc_exepath=%proc.exepath parent=%proc.pname command=%proc.cmdline terminal=%proc.tty exe_flags=%evt.arg.flags %container.info)
   priority: CRITICAL
   tags: [custom_rule, container, process, tty]
+
+# The rules above to not capture commands executed via 'kubectl exec',
+# but the kubernetes apiserver audit log contains everything we need.
+# taken from: https://raw.githubusercontent.com/falcosecurity/plugins/master/plugins/k8saudit/rules/k8s_audit_rules.yaml
+- macro: kevt_started
+  condition: (jevt.value[/stage]=ResponseStarted)
+
+- macro: pod_subresource
+  condition: ka.target.resource=pods and ka.target.subresource exists
+
+- macro: kget
+  condition: ka.verb=get
+
+- macro: kcreate
+  condition: ka.verb=create
+
+- macro: kmodify
+  condition: (ka.verb in (create,update,patch))
+
+- macro: kdelete
+  condition: ka.verb=delete
+
+- macro: k8s_audit_never_true
+  condition: (jevt.rawtime=0)
+
+- macro: user_known_exec_pod_activities
+  condition: (k8s_audit_never_true)
+
+- rule: Attach/Exec Pod
+  desc: >
+    Detect any attempt to attach/exec to a pod
+  condition: >-
+    kevt_started
+    and pod_subresource
+    and kcreate
+    and ka.target.subresource in (exec,attach)
+    and not user_known_exec_pod_activities
+  output: Attach/Exec to pod (user=%ka.user.name pod=%ka.target.name resource=%ka.target.resource ns=%ka.target.namespace action=%ka.target.subresource command=%ka.uri.param[command])
+  priority: NOTICE
+  source: k8s_audit
+  tags: [k8s]

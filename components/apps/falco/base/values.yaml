@@ -19,10 +19,50 @@ falco:
   rules_file:
     - /etc/falco/extra-rules.d
     - /etc/falco/rules.d
+  load_plugins:
+    - k8saudit
+    - json
+  plugins:
+    - name: k8saudit
+      library_path: libk8saudit.so
+      init_config:
+      #   maxEventSize: 262144
+      #   webhookMaxBatchSize: 12582912
+      #   sslCertificate: /etc/falco/falco.pem
+      # open_params: "http://:9765/k8s-audit"
+      open_params: "/host/var/log/kube-apiserver/audit.log"
+    - name: json
+      library_path: libjson.so
+      init_config: ""
+
+falcoctl:
+  artifact:
+    install:
+      enabled: false
+    follow:
+      enabled: false
+
 falcosidekick:
+  replicaCount: 1
   enabled: true
   webui:
+    replicaCount: 1
     enabled: true
+
+mounts:
+  volumes:
+    - name: kube-apiserver-audit-mount
+      hostPath:
+        path: /var/log/kube-apiserver/audit.log
+    - name: falco-extra-rules-volume
+      optional: true
+      configMap:
+        name: falco-extra-rules
+  volumeMounts:
+    - mountPath: /host/var/log/kube-apiserver/audit.log
+      name: kube-apiserver-audit-mount
+    - mountPath: /etc/falco/extra-rules.d
+      name: falco-extra-rules-volume
 
 # Custom rules a now deploy via an extra configmap
 #
