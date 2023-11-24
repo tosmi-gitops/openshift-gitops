@@ -4,7 +4,7 @@ metadata:
   name: falco-falcosidekick-ui
   namespace: falco
 spec:
-  host: falcosidekick-ui.apps.hub.aws.tntinfra.net
+  host: falcosidekick-ui.apps.sno.aws.tntinfra.net
   port:
     targetPort: http
   tls:

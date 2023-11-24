@@ -4,7 +4,7 @@ driver:
   loader:
     initContainer:
       image:
-        repository: falcosecurity/falco-driver-loader-legacy
+        repository: docker.io/falcosecurity/falco-driver-loader-legacy
         #registry: docker.io
         # repository: tosmi/falco-driver-loader
         #tag: 0.36.1
@@ -53,13 +53,14 @@ mounts:
   volumes:
     - name: kube-apiserver-audit-mount
       hostPath:
-        path: /var/log/kube-apiserver/audit.log
+        # path: /var/log/kube-apiserver/audit.log
+        path: /var/log/kube-apiserver
     - name: falco-extra-rules-volume
       optional: true
       configMap:
         name: falco-extra-rules
   volumeMounts:
-    - mountPath: /host/var/log/kube-apiserver/audit.log
+    - mountPath: /host/var/log/kube-apiserver
       name: kube-apiserver-audit-mount
     - mountPath: /etc/falco/extra-rules.d
       name: falco-extra-rules-volume
