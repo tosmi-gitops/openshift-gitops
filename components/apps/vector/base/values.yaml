@@ -1,0 +1,66 @@
+---
+role: "Aggregator"
+extraVolumes:
+  - name: kafka-mitre-tls
+    secret:
+      secretName: kafka-mitre-user-tls
+extraVolumeMounts:
+  - name: kafka-mitre-tls
+    mountPath: /kafka-mitre
+    readOnly: true
+image:
+  repository: timberio/vector
+  tag: 0.34.1-debian
+
+customConfig:
+  data_dir: /vector-data-dir
+  api:
+    enabled: true
+    address: 127.0.0.1:8686
+    playground: true
+  sources:
+    falco:
+      type: http_server
+      address: 0.0.0.0:8080
+      decoding:
+        codec: json
+      enconding: json
+  transforms:
+    add-hostname:
+      type: remap
+      inputs:
+        - falco
+      source: |-
+        .hostname = "my-hostname"
+    filter-mitre:
+      type: filter
+      inputs:
+        - falco
+      condition:
+        type: vrl
+        source: |-
+          includes!(value: .tags, item: "mitre")
+  sinks:
+    stdout:
+      type: console
+      encoding:
+        codec: json
+      inputs:
+        - filter-mitre
+    mitre:
+      type: kafka
+      topic: mitre
+      bootstrap_servers: "simple-cluster-kafka-tls-0-kafka.apps.sno.aws.tntinfra.net:443"
+      buffer:
+        when_full: drop_newest
+      encoding:
+        codec: json
+      tls:
+        enabled: true
+        verify_certificate: false
+        verify_hostname: false
+        ca_file: /kafka-mitre/ca.crt
+        crt_file: /kafka-mitre/user.crt
+        key_file: /kafka-mitre/user.key
+      inputs:
+        - filter-mitre
