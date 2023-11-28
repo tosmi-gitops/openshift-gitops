@@ -48,6 +48,9 @@ falcosidekick:
   webui:
     replicaCount: 1
     enabled: true
+  ingress:
+    enabled: true
+    host: falcosidekick.local # patch me in cluster overlay
 
 mounts:
   volumes:
