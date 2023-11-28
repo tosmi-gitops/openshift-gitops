@@ -135,4 +135,4 @@
   output: Attach/Exec to pod (user=%ka.user.name pod=%ka.target.name resource=%ka.target.resource ns=%ka.target.namespace action=%ka.target.subresource command=%ka.uri.param[command])
   priority: NOTICE
   source: k8s_audit
-  tags: [k8s]
+  tags: [k8s,siem,confidential]
