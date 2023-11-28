@@ -4,12 +4,15 @@ driver:
   loader:
     initContainer:
       image:
-        repository: docker.io/falcosecurity/falco-driver-loader-legacy
+        repository: falcosecurity/falco-driver-loader-legacy
         #registry: docker.io
         # repository: tosmi/falco-driver-loader
         #tag: 0.36.1
 
 falco:
+  http_output:
+    enabled: true
+    url: vector.falco.svc.cluster.local:8080
   json_output: true
   json_include_output_property: true
   log_syslog: false
