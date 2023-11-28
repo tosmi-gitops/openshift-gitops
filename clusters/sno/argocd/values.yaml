@@ -1,0 +1,87 @@
+---
+clustername: &clustername hub
+
+default:
+  app:
+    enabled: true
+    enableAutoSync: false
+    autoSyncPrune: false
+    project: cluster-config-hub
+    destination:
+      namespace: openshift-gitops
+      server: https://kubernetes.default.svc
+    source:
+      repoURL: https://github.com/tosmi-gitops/openshift-gitops.git
+      targetRevision: HEAD
+
+projects:
+
+  cluster-config-sno:
+    annotations:
+      notifications.argoproj.io/subscribe.on-sync-failed.slack: cluster-gitops
+      notifications.argoproj.io/subscribe.on-health-degraded.slack: cluster-gitops
+    description: Project for overall cluster configuration
+    namespace: openshift-gitops
+    sourceRepos:
+      - https://github.com/tosmi-gitops/openshift-gitops
+      - https://github.com/redhat-cop/gitops-catalog
+    # - https://github.com/gnunn1/gitops-catalog
+    # - https://github.com/gnunn-gitops/acm-hub-bootstrap
+    # - https://github.com/gnunn1/dev-console-plugin
+    destinations: |
+      - namespace: '*'
+        server: https://kubernetes.default.svc
+    extraFields: |
+      clusterResourceWhitelist:
+      - group: '*'
+        kind: '*'
+
+applications:
+
+  oauth-htpasswd:
+    annotations:
+      argocd.argoproj.io/sync-wave: '4'
+      argocd.argoproj.io/compare-options: IgnoreExtraneous
+    destination:
+      namespace: default
+      name: in-cluster
+    source:
+      path: components/configuration/oauth/overlays/htpasswd
+
+  console-customization:
+    annotations:
+      argocd.argoproj.io/sync-wave: '4'
+    destination:
+      namespace: default
+      name: in-cluster
+    source:
+      path: clusters/sno/configuration/console-customization
+
+  groups:
+    annotations:
+      argocd.argoproj.io/sync-wave: '4'
+    destination:
+      namespace: default
+      name: in-cluster
+    source:
+      path: components/configuration/groups/base
+
+  gitops-config:
+    annotations:
+      argocd.argoproj.io/sync-wave: '4'
+    destination:
+      namespace: default
+      name: in-cluster
+    source:
+      path: components/configuration/openshift-gitops/base
+
+  falco:
+    annotations:
+      argocd.argoproj.io/sync-wave: '4'
+    destination:
+      namespace: falco
+      name: in-cluster
+    source:
+      path: components/apps/falco/base
+    syncOptions:
+      - CreateNamespace=true
