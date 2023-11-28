@@ -2,7 +2,8 @@ kind: Kustomization
 apiVersion: kustomize.config.k8s.io/v1beta1
 
 resources:
+  - ../../base
+  # create a simple cluster with one partiation and one user
   - kafka-namespace.yaml
-  # - kafka-server-tls-sealedsecret.yaml
   - simple-cluster.yaml
   - simple-kafkauser.yaml
