@@ -1,0 +1,22 @@
+apiVersion: logging.openshift.io/v1
+kind: ClusterLogForwarder
+metadata:
+  name: instance
+  namespace: openshift-logging
+  labels:
+    app.kubernetes.io/instance: cluster-configuration-logging
+spec:
+  outputs:
+    - http:
+        method: POST
+      name: falco-webhook
+      type: http
+      url: 'http://falco-k8saudit-webhook.falco.svc.cluster.local:9765/k8s-audit'
+  pipelines:
+    - inputRefs:
+        - audit
+      labels:
+        logType: audit
+      name: falco-webhook
+      outputRefs:
+        - falco-webhook
