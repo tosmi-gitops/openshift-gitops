@@ -1,0 +1,73 @@
+data_dir: /vector-data-dir
+api:
+  enabled: true
+  address: 127.0.0.1:8686
+  playground: true
+sources:
+  falco:
+    type: http_server
+    address: 0.0.0.0:8080
+    decoding:
+      codec: json
+    enconding: json
+transforms:
+  add-clustername:
+    type: remap
+    inputs:
+      - falco
+    source: |-
+      clustername, err = get_env_var("CLUSTERNAME")
+      if err != null {
+        clustername = "unknown"
+      }
+
+      if clustername == "" {
+        clustername = "unknown"
+      }
+
+      .clustername = clustername
+  filter-mitre:
+    type: filter
+    inputs:
+      - add-clustername
+    condition:
+      type: vrl
+      source: |-
+        includes!(value: .tags, item: "mitre")
+sinks:
+  stdout:
+    type: console
+    encoding:
+      codec: json
+    inputs:
+      - filter-mitre
+  mitre:
+    type: kafka
+    topic: mitre
+    bootstrap_servers: "simple-cluster-kafka-tls-0-kafka.apps.sno.aws.tntinfra.net:443"
+    buffer:
+      when_full: drop_newest
+    encoding:
+      codec: json
+    tls:
+      enabled: true
+      verify_certificate: false
+      verify_hostname: false
+      ca_file: /kafka-mitre/ca.crt
+      crt_file: /kafka-mitre/user.crt
+      key_file: /kafka-mitre/user.key
+    inputs:
+      - filter-mitre
+tests:
+  - name: Test for add-clustername
+    inputs:
+      - insert_at: add-clustername
+        type: log
+        log_fields:
+          message: "test"
+    outputs:
+      - extract_from: add-clustername
+        conditions:
+          - type: vrl
+            source: |-
+              assert_eq!(.clustername, "unknown")

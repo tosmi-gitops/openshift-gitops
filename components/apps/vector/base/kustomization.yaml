@@ -14,4 +14,7 @@ helmCharts:
     apiVersions:
       - security.openshift.io/v1
 
-resources:
+configMapGenerator:
+  - name: vector-custom-config
+    files:
+      - vector-custom.yaml=vector-config-cm.yaml
