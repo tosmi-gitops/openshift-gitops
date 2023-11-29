@@ -1,6 +1,14 @@
 ---
 role: "Aggregator"
 
+env:
+  - name: CLUSTERNAME
+    valueFrom:
+      configMapKeyRef:
+        name: vector-variables
+        key: CLUSTERNAME
+        optional: true
+
 extraVolumes:
   - name: kafka-mitre-tls
     secret:
