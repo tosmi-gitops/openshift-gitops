@@ -9,6 +9,13 @@ driver:
         # repository: tosmi/falco-driver-loader
         #tag: 0.36.1
 
+services:
+  - name: k8saudit-webhook
+    type: ClusterIP
+    ports:
+      - port: 9765 # See plugin open_params
+        protocol: TCP
+
 falco:
   http_output:
     enabled: true
@@ -33,7 +40,8 @@ falco:
       #   webhookMaxBatchSize: 12582912
       #   sslCertificate: /etc/falco/falco.pem
       # open_params: "http://:9765/k8s-audit"
-      open_params: "/host/var/log/kube-apiserver/audit.log"
+      # open_params: "/host/var/log/kube-apiserver/audit.log"
+      open_params: "http://:9765/k8s-audit"
     - name: json
       library_path: libjson.so
       init_config: ""
