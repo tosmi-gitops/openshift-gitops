@@ -1,6 +1,8 @@
 kind: Kustomization
 apiVersion: kustomize.config.k8s.io/v1beta1
 
+namespace: kafka
+
 resources:
   - ../../base
   # create a simple cluster with one partiation and one user

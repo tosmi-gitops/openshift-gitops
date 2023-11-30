@@ -1,0 +1,30 @@
+---
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: siem
+  labels:
+    strimzi.io/cluster: simple-cluster
+spec:
+  partitions: 1
+  replicas: 1
+---
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: audit
+  labels:
+    strimzi.io/cluster: simple-cluster
+spec:
+  partitions: 1
+  replicas: 1
+---
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: alg
+  labels:
+    strimzi.io/cluster: simple-cluster
+spec:
+  partitions: 1
+  replicas: 1
