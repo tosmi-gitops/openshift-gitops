@@ -1,20 +1,26 @@
----
 kind: Kustomization
 apiVersion: kustomize.config.k8s.io/v1beta1
 
 namespace: falco
 
 helmCharts:
-  - name: vector
-    version: 0.29.0
-    valuesFile: values.yaml
-    namespace: falco
-    releaseName: vector
-    repo: https://helm.vector.dev
-    apiVersions:
-      - security.openshift.io/v1
+- apiVersions:
+  - security.openshift.io/v1
+  name: vector
+  namespace: falco
+  releaseName: vector
+  repo: https://helm.vector.dev
+  valuesFile: values.yaml
+  version: 0.29.0
 
 configMapGenerator:
   - name: vector-custom-config
     files:
-      - vector-custom.yaml=vector-config-cm.yaml
+      - vector-config.yaml=config/vector-config.yaml
+      - tests.yaml=config/tests.yaml
+  - name: vector-vrl-scripts
+    files:
+      - vrl/remap-add-clustername.vrl
+      - vrl/filter-siem.vrl
+      - vrl/filter-audit.vrl
+      - vrl/filter-alg.vrl

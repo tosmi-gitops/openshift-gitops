@@ -3,6 +3,7 @@ api:
   enabled: true
   address: 127.0.0.1:8686
   playground: true
+
 sources:
   falco:
     type: http_server
@@ -10,40 +11,49 @@ sources:
     decoding:
       codec: json
     enconding: json
+
 transforms:
   add-clustername:
     type: remap
     inputs:
       - falco
-    source: |-
-      clustername, err = get_env_var("CLUSTERNAME")
-      if err != null {
-        clustername = "unknown"
-      }
+    file: /etc/vector/vrl/remap-add-clustername.vrl
 
-      if clustername == "" {
-        clustername = "unknown"
-      }
-
-      .clustername = clustername
-  filter-mitre:
+  filter-siem:
     type: filter
     inputs:
       - add-clustername
     condition:
       type: vrl
-      source: |-
-        includes!(value: .tags, item: "mitre")
+      file: /etc/vector/vrl/filter-siem.vrl
+
+  filter-audit:
+    type: filter
+    inputs:
+      - add-clustername
+    condition:
+      type: vrl
+      file: /etc/vector/vrl/filter-audit.vrl
+
+  filter-alg:
+    type: filter
+    inputs:
+      - add-clustername
+    condition:
+      type: vrl
+      file: /etc/vector/vrl/filter-alg.vrl
+
 sinks:
   stdout:
     type: console
     encoding:
       codec: json
     inputs:
-      - filter-mitre
-  mitre:
+      - falco
+
+  siem:
     type: kafka
-    topic: mitre
+    topic: siem
     bootstrap_servers: "simple-cluster-kafka-tls-0-kafka.apps.sno.aws.tntinfra.net:443"
     buffer:
       when_full: drop_newest
@@ -58,16 +68,3 @@ sinks:
       key_file: /kafka-mitre/user.key
     inputs:
       - filter-mitre
-tests:
-  - name: Test for add-clustername
-    inputs:
-      - insert_at: add-clustername
-        type: log
-        log_fields:
-          message: "test"
-    outputs:
-      - extract_from: add-clustername
-        conditions:
-          - type: vrl
-            source: |-
-              assert_eq!(.clustername, "unknown")

@@ -9,14 +9,22 @@ env:
         key: CLUSTERNAME
         optional: true
 
+# we need to extra volumes for our config
+# - one for mounting kafka secrets (key, cert and CA cert)
+# - one for mounting VRL scripts
 extraVolumes:
   - name: kafka-mitre-tls
     secret:
       secretName: kafka-mitre-user-tls
-
+  - name: vrl-scripts
+    configMap:
+      name: vector-vrl-scripts
 extraVolumeMounts:
   - name: kafka-mitre-tls
     mountPath: /kafka-mitre
+    readOnly: true
+  - name: vrl-scripts
+    mountPath: /etc/vector/vrl
     readOnly: true
 
 image:

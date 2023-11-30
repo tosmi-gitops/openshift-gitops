@@ -1,0 +1,13 @@
+tests:
+  - name: Test for add-clustername
+    inputs:
+      - insert_at: add-clustername
+        type: log
+        log_fields:
+          message: "test"
+    outputs:
+      - extract_from: add-clustername
+        conditions:
+          - type: vrl
+            source: |-
+              assert_eq!(.clustername, "unknown")
