@@ -1,0 +1,10 @@
+apiVersion: builtin
+kind: ConfigMapGenerator
+#behavior: replace
+metadata:
+  name: falco-extra-rules
+  namespace: falco
+files:
+  - falco-extra-rules.yaml
+# options:
+#   disableNameSuffixHash: true
