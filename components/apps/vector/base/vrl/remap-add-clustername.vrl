@@ -1,4 +1,4 @@
 # add a clustername key to an event
 # uses the environement variable CLUSTERNAME
 #
-.clustername = "${CLUSTERNAME:-unknown}
+.clustername = "${CLUSTERNAME:-unknown}"
