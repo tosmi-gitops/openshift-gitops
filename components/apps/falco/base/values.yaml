@@ -55,12 +55,12 @@ falcoctl:
 
 falcosidekick:
   replicaCount: 1
-  enabled: true
+  enabled: false
   webui:
     replicaCount: 1
-    enabled: true
+    enabled: false
   ingress:
-    enabled: true
+    enabled: false
     host: falcosidekick.local # patch me in cluster overlay
 
 mounts:
