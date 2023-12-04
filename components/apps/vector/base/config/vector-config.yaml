@@ -25,7 +25,10 @@ transforms:
       - add-clustername
     condition:
       type: vrl
-      file: /etc/vector/vrl/filter-siem.vrl
+      source: |-
+        required_tag = "siem"
+        tags = array!(.tags)
+        exists(.tags) && includes(value: tags, item: required_tag)
 
   filter-audit:
     type: filter
@@ -33,7 +36,10 @@ transforms:
       - add-clustername
     condition:
       type: vrl
-      file: /etc/vector/vrl/filter-audit.vrl
+      source: |-
+        required_tag = "audit"
+        tags = array!(.tags)
+        exists(.tags) && includes(value: tags, item: required_tag)
 
   filter-alg:
     type: filter
@@ -41,7 +47,10 @@ transforms:
       - add-clustername
     condition:
       type: vrl
-      file: /etc/vector/vrl/filter-alg.vrl
+      source: |-
+        required_tag = "alg"
+        tags = array!(.tags)
+        exists(.tags) && includes(value: tags, item: required_tag)
 
 sinks:
   stdout:
@@ -67,4 +76,40 @@ sinks:
       crt_file: /kafka-mitre/user.crt
       key_file: /kafka-mitre/user.key
     inputs:
-      - filter-mitre
+      - filter-siem
+
+  audit:
+    type: kafka
+    topic: audit
+    bootstrap_servers: "simple-cluster-kafka-tls-0-kafka.apps.sno.aws.tntinfra.net:443"
+    buffer:
+      when_full: drop_newest
+    encoding:
+      codec: json
+    tls:
+      enabled: true
+      verify_certificate: false
+      verify_hostname: false
+      ca_file: /kafka-mitre/ca.crt
+      crt_file: /kafka-mitre/user.crt
+      key_file: /kafka-mitre/user.key
+    inputs:
+      - filter-audit
+
+  alg:
+    type: kafka
+    topic: alg
+    bootstrap_servers: "simple-cluster-kafka-tls-0-kafka.apps.sno.aws.tntinfra.net:443"
+    buffer:
+      when_full: drop_newest
+    encoding:
+      codec: json
+    tls:
+      enabled: true
+      verify_certificate: false
+      verify_hostname: false
+      ca_file: /kafka-mitre/ca.crt
+      crt_file: /kafka-mitre/user.crt
+      key_file: /kafka-mitre/user.key
+    inputs:
+      - filter-alg

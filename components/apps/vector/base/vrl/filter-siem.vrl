@@ -1,6 +1,0 @@
-required_tag = "siem"
-
-# ensure we have an array type
-.tags = array!(.tags)
-
-exists(.tags) && includes(value: .tags, item: required_tag)

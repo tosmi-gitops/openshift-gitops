@@ -21,6 +21,3 @@ configMapGenerator:
   - name: vector-vrl-scripts
     files:
       - vrl/remap-add-clustername.vrl
-      - vrl/filter-siem.vrl
-      - vrl/filter-audit.vrl
-      - vrl/filter-alg.vrl
