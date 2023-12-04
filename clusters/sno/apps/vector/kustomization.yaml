@@ -9,4 +9,4 @@ configMapGenerator:
     options:
       disableNameSuffixHash: true
     literals:
-      - CLUSTERNAME=hub
+      - CLUSTERNAME=sno
