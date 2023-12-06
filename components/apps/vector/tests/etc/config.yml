@@ -1,0 +1,13 @@
+contexts:
+    default:
+        brokers:
+            - localhost:9092
+    simplecluster:
+        brokers:
+            - simple-cluster-kafka-tls-0-kafka.apps.sno.aws.tntinfra.net:443
+            - simple-cluster-kafka-tls-1-kafka.apps.sno.aws.tntinfra.net:443
+            - simple-cluster-kafka-tls-2-kafka.apps.sno.aws.tntinfra.net:443
+        tls:
+            enabled: true
+            insecure: true
+current-context: simplecluster

@@ -17,7 +17,7 @@ transforms:
     type: remap
     inputs:
       - falco
-    file: /etc/vector/vrl/remap-add-clustername.vrl
+    file: /etc/vector/remap-add-clustername.vrl
 
   filter-siem:
     type: filter

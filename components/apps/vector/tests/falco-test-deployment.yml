@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: falco-pvc-test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: falco-pvc-test
+  template:
+    metadata:
+      labels:
+        app: falco-pvc-test
+    spec:
+      containers:
+      - command:
+        - sh
+        - -c
+        - echo "hello world" && sleep infinity
+        image: registry.redhat.io/ubi8/ubi:8.3
+        imagePullPolicy: IfNotPresent
+        name: falco-pvc-test
+        volumeMounts:
+        - mountPath: /mnt
+          name: falco-test-pvc
+      volumes:
+      - name: falco-test-pvc
+        persistentVolumeClaim:
+          claimName: falco-test-pvc

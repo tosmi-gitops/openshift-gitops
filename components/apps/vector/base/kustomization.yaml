@@ -18,6 +18,6 @@ configMapGenerator:
     files:
       - vector-config.yaml=config/vector-config.yaml
       - tests.yaml=config/tests.yaml
-  - name: vector-vrl-scripts
-    files:
-      - vrl/remap-add-clustername.vrl
+      - remap-add-clustername.vrl=config/remap-add-clustername.vrl
+  # - name: vector-vrl-scripts
+  #   files:

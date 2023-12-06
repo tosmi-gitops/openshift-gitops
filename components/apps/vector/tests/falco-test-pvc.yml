@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: falco-test-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce    # could also be ReadWriteMany, talk to your admin if in doubt
+  resources:
+    requests:
+      storage: 100Mi
+  volumeMode: Filesystem

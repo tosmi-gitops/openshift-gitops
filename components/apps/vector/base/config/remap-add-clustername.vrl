@@ -1,0 +1,11 @@
+# add a clustername key to an event
+# uses the environement variable CLUSTERNAME
+#
+unknown_clustername = "unknown"
+clustername, err = get_env_var(name: "CLUSTERNAME")
+
+if err != null || clustername == "" {
+     clustername = unknown_clustername
+}
+
+.clustername = clustername

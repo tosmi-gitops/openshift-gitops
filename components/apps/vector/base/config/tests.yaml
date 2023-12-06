@@ -1,5 +1,5 @@
 tests:
-  - name: Test for add-clustername
+  - name: for add-clustername
     inputs:
       - insert_at: add-clustername
         type: log
@@ -10,4 +10,61 @@ tests:
         conditions:
           - type: vrl
             source: |-
-              assert_eq!(.clustername, "unknown")
+              clustername, err = get_env_var("CLUSTERNAME")
+              if err != null {
+                clustername = "unknown"
+              }
+              assert_eq!(.clustername, clustername)
+
+  - name: SIEM filtering
+    inputs:
+      - insert_at: add-clustername
+        type: log
+        log_fields:
+          "tags[0]": atag
+          "tags[1]": siem
+    outputs:
+      - extract_from: filter-siem
+        conditions:
+          - type: vrl
+            source: |-
+              assert!(exists(.clustername))
+
+  - name: ALG filtering
+    inputs:
+      - insert_at: add-clustername
+        type: log
+        log_fields:
+          "tags[0]": atag
+          "tags[1]": alg
+    outputs:
+      - extract_from: filter-alg
+        conditions:
+          - type: vrl
+            source: |-
+              assert!(exists(.clustername))
+
+  - name: AUDIT filtering
+    inputs:
+      - insert_at: add-clustername
+        type: log
+        log_fields:
+          "tags[0]": atag
+          "tags[1]": audit
+    outputs:
+      - extract_from: filter-audit
+        conditions:
+          - type: vrl
+            source: |-
+              assert!(exists(.clustername))
+
+  - name: filters skip events without a known tag
+    inputs:
+      - insert_at: add-clustername
+        type: log
+        log_fields:
+          "tags[0]": atag
+    no_outputs_from:
+      - filter-siem
+      - filter-alg
+      - filter-audit
