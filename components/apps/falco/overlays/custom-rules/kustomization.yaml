@@ -11,3 +11,4 @@ configMapGenerator:
       disableNameSuffixHash: true
     files:
       - falco-extra-rules.yaml
+      - k8s-custom-rules.yaml
