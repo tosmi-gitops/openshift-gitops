@@ -1,0 +1,233 @@
+---
+##############################################
+#
+# rules a mostly a copy of standard falco rules
+#
+# https://github.com/falcosecurity/plugins/blob/master/plugins/k8saudit/rules/k8s_audit_rules.yaml
+#
+# WARNING: DO NOT FORGET TO ADD REQUIRED TAGS:
+# - alg
+# - siem
+# - audit
+#
+- required_engine_version: 26
+
+- required_plugin_versions:
+  - name: k8saudit
+    version: 0.6.0
+  - name: json
+    version: 0.7.0
+
+#################################################
+# Required lists and macros for rules to work
+#
+- macro: never_true
+  condition: (evt.num=0)
+
+- macro: kget
+  condition: ka.verb=get
+
+- macro: kcreate
+  condition: ka.verb=create
+
+- macro: kmodify
+  condition: (ka.verb in (create,update,patch))
+
+- macro: kdelete
+  condition: ka.verb=delete
+
+- macro: k8s_audit_never_true
+  condition: (jevt.rawtime=0)
+
+- macro: kevt_started
+  condition: (jevt.value[/stage]=ResponseStarted)
+
+- macro: kevt_complete
+  condition: (jevt.value[/stage]=ResponseComplete)
+
+- macro: user_known_exec_pod_activities
+  condition: (k8s_audit_never_true)
+
+- macro: pod_subresource
+  condition: ka.target.resource=pods and ka.target.subresource exists
+
+- macro: container_started
+  condition: >
+    ((evt.type = container or
+     (spawned_process and proc.vpid=1)) and
+     container.image.repository != incomplete)
+
+- macro: allowed_openshift_registry_root
+  condition: >
+    (container.image.repository startswith openshift3/ or
+     container.image.repository startswith registry.redhat.io/openshift3/ or
+     container.image.repository startswith registry.access.redhat.com/openshift3/)
+
+# Source: https://docs.openshift.com/enterprise/3.2/install_config/install/disconnected_install.html
+- macro: openshift_image
+  condition: >
+    (allowed_openshift_registry_root and
+      (container.image.repository endswith /logging-deployment or
+       container.image.repository endswith /logging-elasticsearch or
+       container.image.repository endswith /logging-kibana or
+       container.image.repository endswith /logging-fluentd or
+       container.image.repository endswith /logging-auth-proxy or
+       container.image.repository endswith /metrics-deployer or
+       container.image.repository endswith /metrics-hawkular-metrics or
+       container.image.repository endswith /metrics-cassandra or
+       container.image.repository endswith /metrics-heapster or
+       container.image.repository endswith /ose-haproxy-router or
+       container.image.repository endswith /ose-deployer or
+       container.image.repository endswith /ose-sti-builder or
+       container.image.repository endswith /ose-docker-builder or
+       container.image.repository endswith /ose-pod or
+       container.image.repository endswith /ose-node or
+       container.image.repository endswith /ose-docker-registry or
+       container.image.repository endswith /prometheus-node-exporter or
+       container.image.repository endswith /image-inspector))
+
+- list: redhat_io_images_privileged
+  items: [registry.redhat.io/openshift-logging/fluentd-rhel8, registry.redhat.io/openshift4/ose-csi-node-driver-registrar, registry.redhat.io/openshift4/ose-kubernetes-nmstate-handler-rhel8, registry.redhat.io/openshift4/ose-local-storage-diskmaker]
+
+- macro: redhat_image
+  condition: >
+    (container.image.repository in (redhat_io_images_privileged))
+
+# These images are allowed both to run with --privileged and to mount
+# sensitive paths from the host filesystem.
+#
+# NOTE: This list is only provided for backwards compatibility with
+# older local falco rules files that may have been appending to
+# trusted_images. To make customizations, it's better to add images to
+# either privileged_images or falco_sensitive_mount_images.
+- list: trusted_images
+  items: []
+
+# Falco containers
+- list: falco_containers
+  items:
+    - falcosecurity/falco
+    - docker.io/falcosecurity/falco
+    - public.ecr.aws/falcosecurity/falco
+
+# Falco no driver containers
+    - falcosecurity/falco-no-driver
+    - docker.io/falcosecurity/falco-no-driver
+    - public.ecr.aws/falcosecurity/falco-no-driver
+
+- macro: user_trusted_containers
+  condition: (never_true)
+
+- macro: falco_privileged_containers
+  condition: (openshift_image or
+              user_trusted_containers or
+              container.image.repository in (trusted_images) or
+              container.image.repository in (falco_privileged_images) or
+              container.image.repository startswith istio/proxy_ or
+              container.image.repository startswith quay.io/sysdig/)
+
+- macro: user_privileged_containers
+  condition: (never_true)
+
+
+#################################################
+# watch for users not allowed to create pvc/pv's
+#
+- macro: persistentvolumeclaim
+  condition: >-
+    (ka.target.resource=persistentvolumeclaims or ka.target.resource=persistentvolumes)
+
+- list: users_allowed_to_create_pvc
+  items:
+    - user1
+    - system:serviceaccount:kube-system:pvc-protection-controller
+
+- macro: user_allowed_create_pvc
+  condition: >
+    (ka.user.name in (users_allowed_to_create_pvc))
+
+- rule: User not whitelisted created a PersistentVolume or PersistentVolumeClaim
+  desc: >
+    Detect creation of PersistantVolumes and PersistentVolumeClaims
+  condition: >-
+    kevt_complete
+    and (kmodify or kdelete)
+    and persistentvolumeclaim
+    and not user_allowed_create_pvc
+  output: User not whitelisted modified PersistentVolume or PersistentVolumeClaim (user=%ka.user.name action=%ka.verb volume=%ka.target.name resource=%ka.target.resource ns=%ka.target.namespace)
+  priority: NOTICE
+  source: k8s_audit
+  tags: [k8s, confidential, siem]
+
+#################################################
+# watch for users not allowed to create/modify
+# deployments or deploymentconfigs
+#
+- macro: deployment
+  condition: >-
+    (ka.target.resource=deployments or ka.target.resource=deploymentsconfigs)
+
+- list: users_allowed_to_modify_deployment
+  items:
+    - root
+    - system:serviceaccount:openshift-monitoring:cluster-monitoring-operator
+    - system:serviceaccount:openshift-network-operator:default
+
+- macro: user_allowed_modify_deployment
+  condition: >
+    (ka.user.name in (users_allowed_to_modify_deployment))
+
+- rule: Modification of existing Deployments or DeploymentConfigs
+  desc: >
+    Detect an attempt to modify an existing Deployment/DeploymentConfig
+  condition: >-
+    kevt_complete
+    and kmodify
+    and deployment
+    and not user_allowed_modify_deployment
+  output: User not whitelisted tried to modify deployment (user=%ka.user.name pod=%ka.target.name resource=%ka.target.resource ns=%ka.target.namespace)
+  priority: NOTICE
+  source: k8s_audit
+  tags: [k8s, confidential, siem]
+
+#################################################
+# Log attach/exec to pods
+#
+# eBPF rules do not capture commands executed via 'kubectl exec', but
+# the kubernetes apiserver audit log contains everything we need.
+# taken from:
+# https://raw.githubusercontent.com/falcosecurity/plugins/master/plugins/k8saudit/rules/k8s_audit_rules.yaml
+#
+- rule: Attach/Exec to pod
+  desc: >
+    Detect an attempt to attach/exec to a pod
+  condition: >-
+    kevt_started
+    and pod_subresource
+    and kcreate
+    and ka.target.subresource in (exec,attach)
+    and not user_known_exec_pod_activities
+  output: Attach/Exec to pod (user=%ka.user.name pod=%ka.target.name resource=%ka.target.resource ns=%ka.target.namespace action=%ka.target.subresource command=%ka.uri.param[command])
+  priority: NOTICE
+  source: k8s_audit
+  tags: [k8s, confidential, siem]
+
+#################################################
+# Log launching a privileged container
+#
+- rule: Launch Privileged Container
+  desc: >
+    Detect the initial process initiation within a privileged container, with exemptions for known and trusted images.
+    This rule primarily serves as an excellent auditing mechanism since highly privileged containers, when compromised,
+    can result in significant harm. For instance, if another rule triggers within such a privileged container, it could be
+    seen as more suspicious, prompting a closer inspection.
+  condition: >
+    container_started
+    and container
+    and container.privileged=true
+    and not falco_privileged_containers
+    and not user_privileged_containers
+    and not redhat_image
+  output: Privileged container started (evt_type=%evt.type user=%user.name user_uid=%user.uid user_loginuid=%user.loginuid process=%proc.name proc_exepath=%proc.exepath parent=%proc.pname command=%proc.cmdline terminal=%proc.tty exe_flags=%evt.arg.flags %container.info)
+  priority: INFO
+  tags: [maturity_incubating, container, cis, mitre_execution, T1610, PCI_DSS_10.2.5, siem]

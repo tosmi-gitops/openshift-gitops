@@ -1,12 +1,24 @@
 ---
+##############################################
+#
+# rules a mostly a copy of standard falco rules
+#
+# https://github.com/falcosecurity/rules/tree/main/rules
+#
+# WARNING: DO NOT FORGET TO ADD REQUIRED TAGS:
+# - alg
+# - siem
+# - audit
+#
+
 - required_engine_version: 26
 
+##############################################
+# Required lists and macros for rules to work
+#
 - macro: never_true
   condition: (evt.num=0)
 
-#
-# Required lists and macros for rules to work
-#
 - list: shell_binaries
   items: [ash, bash, csh, ksh, sh, tcsh, zsh, dash]
 
@@ -41,10 +53,11 @@
 - macro: kernel_module_load
   condition: (evt.type in (init_module, finit_module) and evt.dir=<)
 
-#
+######################################
 # Custom rules
 #
 
+####################################################################
 # Copy of the default falco rule, removed 'and not
 # user_expected_terminal_shell_in_container_conditions' from
 # condition, so whenever someone opens a shell in a container create
@@ -66,6 +79,7 @@
   priority: NOTICE
   tags: [maturity_stable, container, shell, mitre_execution, T1059, siem]
 
+#######################################################################
 # Log all commands executed in an interactive shell inside a
 # container. This creates events for all processes created via execve
 # and execve.
@@ -86,9 +100,22 @@
   priority: CRITICAL
   tags: [custom_rule, container, process, tty, alg]
 
+##########################################################
 # As the rule above does NOT log shell builtins (e.g. echo <string> >
 # /etc/passwd), we audit all read and write requests in an interactive
 # shell inside container.
+#
+# custom list of files to ignore
+# used in "Log read and write container in an interactive shell"
+- list: ignored_file_names
+  items:
+    - /etc/ld.so.cache
+    - /proc/mounts
+
+- macro: ignored_files
+  condition: |
+    (fd.name in (ignored_file_names))
+
 - rule: Log read and write in container in an interactive shell
   desc: >-
     Log all read/write calls in a container if tere is an interactive
@@ -98,10 +125,14 @@
     and container
     and proc.tty != 0
     and proc.is_vpgid_leader=true
+    and not ignored_files
   output: Read/Write in container (file=%fd.name fileraw=%fd.nameraw gparent=%proc.aname[2] ggparent=%proc.aname[3] gggparent=%proc.aname[4] evt_type=%evt.type user=%user.name user_uid=%user.uid user_loginuid=%user.loginuid process=%proc.name proc_exepath=%proc.exepath parent=%proc.pname command=%proc.cmdline terminal=%proc.tty exe_flags=%evt.arg.flags %container.info)
   priority: CRITICAL
   tags: [custom_rule, container, process, tty, alg]
 
+################################################
+# Log event when a kernel module gets loaded
+#
 - list: allowed_container_images_loading_kernel_module
   items: []
 
@@ -118,139 +149,3 @@
   output: Linux Kernel Module injection from container (parent_exepath=%proc.pexepath gparent=%proc.aname[2] gexepath=%proc.aexepath[2] module=%proc.args res=%evt.res evt_type=%evt.type user=%user.name user_uid=%user.uid user_loginuid=%user.loginuid process=%proc.name proc_exepath=%proc.exepath parent=%proc.pname command=%proc.cmdline terminal=%proc.tty exe_flags=%evt.arg.flags %container.info)
   priority: WARNING
   tags: [maturity_stable, host, container, process, mitre_persistence, TA0003, siem]
-
-# The rules above to not capture commands executed via 'kubectl exec',
-# but the kubernetes apiserver audit log contains everything we need.
-# taken from: https://raw.githubusercontent.com/falcosecurity/plugins/master/plugins/k8saudit/rules/k8s_audit_rules.yaml
-- macro: kevt_started
-  condition: (jevt.value[/stage]=ResponseStarted)
-
-- macro: pod_subresource
-  condition: ka.target.resource=pods and ka.target.subresource exists
-
-- macro: kget
-  condition: ka.verb=get
-
-- macro: kcreate
-  condition: ka.verb=create
-
-- macro: kmodify
-  condition: (ka.verb in (create,update,patch))
-
-- macro: kdelete
-  condition: ka.verb=delete
-
-- macro: k8s_audit_never_true
-  condition: (jevt.rawtime=0)
-
-- macro: user_known_exec_pod_activities
-  condition: (k8s_audit_never_true)
-
-- macro: container_started
-  condition: >
-    ((evt.type = container or
-     (spawned_process and proc.vpid=1)) and
-     container.image.repository != incomplete)
-
-- rule: Attach/Exec to pod
-  desc: >
-    Detect an attempt to attach/exec to a pod
-  condition: >-
-    kevt_started
-    and pod_subresource
-    and kcreate
-    and ka.target.subresource in (exec,attach)
-    and not user_known_exec_pod_activities
-  output: Attach/Exec to pod (user=%ka.user.name pod=%ka.target.name resource=%ka.target.resource ns=%ka.target.namespace action=%ka.target.subresource command=%ka.uri.param[command])
-  priority: NOTICE
-  source: k8s_audit
-  tags: [k8s, confidential, siem]
-
-- macro: allowed_openshift_registry_root
-  condition: >
-    (container.image.repository startswith openshift3/ or
-     container.image.repository startswith registry.redhat.io/openshift3/ or
-     container.image.repository startswith registry.access.redhat.com/openshift3/)
-
-# Source: https://docs.openshift.com/enterprise/3.2/install_config/install/disconnected_install.html
-- macro: openshift_image
-  condition: >
-    (allowed_openshift_registry_root and
-      (container.image.repository endswith /logging-deployment or
-       container.image.repository endswith /logging-elasticsearch or
-       container.image.repository endswith /logging-kibana or
-       container.image.repository endswith /logging-fluentd or
-       container.image.repository endswith /logging-auth-proxy or
-       container.image.repository endswith /metrics-deployer or
-       container.image.repository endswith /metrics-hawkular-metrics or
-       container.image.repository endswith /metrics-cassandra or
-       container.image.repository endswith /metrics-heapster or
-       container.image.repository endswith /ose-haproxy-router or
-       container.image.repository endswith /ose-deployer or
-       container.image.repository endswith /ose-sti-builder or
-       container.image.repository endswith /ose-docker-builder or
-       container.image.repository endswith /ose-pod or
-       container.image.repository endswith /ose-node or
-       container.image.repository endswith /ose-docker-registry or
-       container.image.repository endswith /prometheus-node-exporter or
-       container.image.repository endswith /image-inspector))
-
-- list: redhat_io_images_privileged
-  items: [registry.redhat.io/openshift-logging/fluentd-rhel8, registry.redhat.io/openshift4/ose-csi-node-driver-registrar, registry.redhat.io/openshift4/ose-kubernetes-nmstate-handler-rhel8, registry.redhat.io/openshift4/ose-local-storage-diskmaker]
-
-- macro: redhat_image
-  condition: >
-    (container.image.repository in (redhat_io_images_privileged))
-
-# These images are allowed both to run with --privileged and to mount
-# sensitive paths from the host filesystem.
-#
-# NOTE: This list is only provided for backwards compatibility with
-# older local falco rules files that may have been appending to
-# trusted_images. To make customizations, it's better to add images to
-# either privileged_images or falco_sensitive_mount_images.
-- list: trusted_images
-  items: []
-
-# Falco containers
-- list: falco_containers
-  items:
-    - falcosecurity/falco
-    - docker.io/falcosecurity/falco
-    - public.ecr.aws/falcosecurity/falco
-
-# Falco no driver containers
-    - falcosecurity/falco-no-driver
-    - docker.io/falcosecurity/falco-no-driver
-    - public.ecr.aws/falcosecurity/falco-no-driver
-
-- macro: user_trusted_containers
-  condition: (never_true)
-
-- macro: falco_privileged_containers
-  condition: (openshift_image or
-              user_trusted_containers or
-              container.image.repository in (trusted_images) or
-              container.image.repository in (falco_privileged_images) or
-              container.image.repository startswith istio/proxy_ or
-              container.image.repository startswith quay.io/sysdig/)
-
-- macro: user_privileged_containers
-  condition: (never_true)
-
-- rule: Launch Privileged Container
-  desc: >
-    Detect the initial process initiation within a privileged container, with exemptions for known and trusted images.
-    This rule primarily serves as an excellent auditing mechanism since highly privileged containers, when compromised,
-    can result in significant harm. For instance, if another rule triggers within such a privileged container, it could be
-    seen as more suspicious, prompting a closer inspection.
-  condition: >
-    container_started
-    and container
-    and container.privileged=true
-    and not falco_privileged_containers
-    and not user_privileged_containers
-    and not redhat_image
-  output: Privileged container started (evt_type=%evt.type user=%user.name user_uid=%user.uid user_loginuid=%user.loginuid process=%proc.name proc_exepath=%proc.exepath parent=%proc.pname command=%proc.cmdline terminal=%proc.tty exe_flags=%evt.arg.flags %container.info)
-  priority: INFO
-  tags: [maturity_incubating, container, cis, mitre_execution, T1610, PCI_DSS_10.2.5, siem]
