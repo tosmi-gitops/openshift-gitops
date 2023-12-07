@@ -17,18 +17,27 @@ services:
         protocol: TCP
 
 falco:
+  # maybe disable stdout_output in production
+  stdout_output:
+    enabled: true
+  # this is required to forward events to vector
   http_output:
     enabled: true
     url: vector.falco.svc.cluster.local:8080
   json_output: true
   json_include_output_property: true
   log_syslog: false
-  log_level: info
+  log_stderr: true
+  log_level: debug
+  libs_logger:
+    enabled: false
+    severity: debug
   # overwrite the default rules list, currently we only want our
   # custom rules to be active
   rules_file:
     - /etc/falco/extra-rules.d
     - /etc/falco/rules.d
+  # for kubernetes events we need the k8saudit and json plugins
   load_plugins:
     - k8saudit
     - json
@@ -39,7 +48,10 @@ falco:
       #   maxEventSize: 262144
       #   webhookMaxBatchSize: 12582912
       #   sslCertificate: /etc/falco/falco.pem
-      # open_params: "http://:9765/k8s-audit"
+      #
+      # reading the audit log as file does only work if it is not rotated
+      # the falco docs also mention that for a production deployment
+      # you should forward logs via webhook
       # open_params: "/host/var/log/kube-apiserver/audit.log"
       open_params: "http://:9765/k8s-audit"
     - name: json
