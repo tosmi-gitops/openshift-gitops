@@ -13,24 +13,28 @@ GREEN=$(tput setaf 2)
 YELLOW=$(tput setaf 3)
 NC=$(tput sgr0)
 
+ERROR="⛔"
+WARNING="⚠️"
+OK="✅"
+
 declare -a KAFKA_TOPICS=(siem alg audit)
 
 error() {
-    echo >&2 "${RED}ERROR${NC}: $1"
+    echo >&2 "${ERROR} ${RED}ERROR${NC}: $1"
     exit 1
 }
 
 failed() {
-    echo >&2 "${RED}FAILED${NC}: $1"
+    echo >&2 "${ERROR} ${RED}FAILED${NC}: $1"
     exit 1
 }
 
 warning() {
-    echo "${YELLOW}FAILED${NC}: $1"
+    echo "${WARNING} ${YELLOW}WARNING${NC}: $1"
 }
 
 success() {
-    echo "${GREEN}OK${NC}: $1"
+    echo "${OK} ${GREEN}OK${NC}: $1"
 }
 
 check_commands() {
@@ -95,8 +99,8 @@ test_exec() {
     oc delete pod falco-test-pod
 }
 
-test_interactive_shell() {
-    success "TEST INTERACTIVE SHELL"
+test_remote_shell() {
+    success "TEST REMOTE SHELL"
     recreate_topics
 
     success "Starting test pod..."
@@ -116,6 +120,26 @@ test_interactive_shell() {
     oc delete pod falco-test-pod
 }
 
+test_interactive_shell() {
+    echo "TEST INTERACTIVE SHELL"
+    recreate_topics
+
+    success "Starting test pod..."
+    oc apply -f "${K8S_CONFIG}"/falco-test-pod.yaml
+
+    success "Give pod time to start..."
+    sleep 10
+
+    warning "Please open an interactive shell: oc rsh -n falco falco-test-pod"
+    warning "and execute a command: ls"
+    warning "when finished press the any key!"
+    read -r
+
+    kafka_check_topic siem "Terminal shell in container"
+
+    oc delete pod falco-test-pod
+}
+
 check_commands
 check_env
 
@@ -126,4 +150,5 @@ export KAFKACTL="kafkactl --config-file ${KAFKA_CONFIG}"
 
 test_pvc
 test_exec
+test_remote_shell
 test_interactive_shell
