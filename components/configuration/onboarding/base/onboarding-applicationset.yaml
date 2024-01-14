@@ -1,0 +1,33 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: onboarding
+spec:
+  generators:
+    - matrix:
+        generators:
+          - git:
+              pathParamPrefix: tenants
+              repoURL: https://github.com/tosmi-gitops/onboarding.git
+              revision: HEAD
+              directories:
+                - path: tenants/*
+          - git:
+              pathParamPrefix: cluster
+              repoURL: https://github.com/tosmi-gitops/onboarding.git
+              revision: HEAD
+              directories:
+                - path: tenants/{{tenants.path.basename}}/clusters/*
+                # does not work
+                # - path: tenants/*/clusters/*
+  template:
+    metadata:
+      name: '{{tenants.path.basename}}-{{cluster.path.basename}}-onboarding'
+    spec:
+      project: onboarding
+      source:
+        repoURL: https://github.com/tosmi-gitops/onboarding.git
+        targetRevision: HEAD
+        path: tenants/{{tenants.path.basename}}/clusters/{{cluster.path.basename}}
+      destination:
+        name: '{{cluster.path.basename}}'
