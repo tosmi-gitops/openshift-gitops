@@ -3,6 +3,8 @@ kind: ApplicationSet
 metadata:
   name: onboarding
 spec:
+  syncPolicy:
+    preserveResourcesOnDeletion: true
   generators:
     - matrix:
         generators:
