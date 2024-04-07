@@ -11,4 +11,4 @@ patches:
     patch: |-
       - op: replace
         path: /spec/channel
-        value: stable
+        value: gitops-1.12
