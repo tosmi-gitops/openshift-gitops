@@ -3,6 +3,16 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
+  # The "oauth" component deploys basic htpasswd based authentication.
+  # This is allows us to login as "root" to the cluster before we sync
+  # any ArgoCD applications.
+  #
+  # The groups components adds the user "root" to the groups "cluster-admins".
+  # This grants the "root" user full access to ArgoCD.
+  - ../../../components/configuration/oauth/overlays/htpasswd
+  - ../../../components/configuration/groups/base
+
+  # Everything else is managed by ArgoCD
   - cluster-config-project.yaml
   - tenants-project.yaml
   - cluster-config-manager-app.yaml
