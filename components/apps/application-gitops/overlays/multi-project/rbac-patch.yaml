@@ -5,8 +5,28 @@ metadata:
   namespace: application-gitops
 spec:
   rbac:
-    defaultPolicy: role:readonly
+    defaultPolicy: role:none
     policy: |
+      # The default role sees nothing
+      p, role:none, applications, get, */*, deny
+      p, role:none, certificates, get, *, deny
+      p, role:none, clusters, get, *, deny
+      p, role:none, repositories, get, *, deny
+      p, role:none, projects, get, *, deny
+      p, role:none, accounts, get, *, deny
+      p, role:none, gpgkeys, get, *, deny
+
+      # Adding Roles for specific group, i.e. Developers
+      p, role:developer, applications, get, example-app-1/*, allow
+      p, role:developer, clusters, get, https://kubernetes.default.svc, allow
+      g, developer, role:developer
+
+      # Permissions for Operators
+      p, role:operator, applications, get, example-app-1-prod/*, allow
+      p, role:operator, clusters, get, *, allow
+      g, operations, role:operations
+
+      # Another example using prod and test deployers
       p, role:prod-deployer, applications, create, production/*, allow
       p, role:prod-deployer, applications, delete, production/*, allow
       p, role:prod-deployer, applications, get, production/*, allow
