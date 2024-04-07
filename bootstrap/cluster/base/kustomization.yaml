@@ -11,8 +11,3 @@ resources:
   # This grants the "root" user full access to ArgoCD.
   - ../../../components/configuration/oauth/overlays/htpasswd
   - ../../../components/configuration/groups/base
-
-  # Everything else is managed by ArgoCD
-  - cluster-config-project.yaml
-  - tenants-project.yaml
-  - cluster-config-manager-app.yaml
