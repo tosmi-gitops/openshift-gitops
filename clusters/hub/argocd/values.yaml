@@ -1,5 +1,6 @@
 ---
 clustername: &clustername hub
+destination: &destination in-cluster
 
 default:
   app:
@@ -44,7 +45,7 @@ applications:
       argocd.argoproj.io/compare-options: IgnoreExtraneous
     destination:
       namespace: default
-      name: in-cluster
+      name: *destination
     source:
       path: components/configuration/oauth/overlays/htpasswd
 
@@ -53,7 +54,7 @@ applications:
       argocd.argoproj.io/sync-wave: '4'
     destination:
       namespace: default
-      name: in-cluster
+      name: *destination
     source:
       path: clusters/hub/configuration/console-customization
 
@@ -62,7 +63,7 @@ applications:
       argocd.argoproj.io/sync-wave: '4'
     destination:
       namespace: default
-      name: in-cluster
+      name: *destination
     source:
       path: components/configuration/groups/overlays/hub
 
@@ -71,39 +72,39 @@ applications:
       argocd.argoproj.io/sync-wave: '4'
     destination:
       namespace: default
-      name: in-cluster
+      name: *destination
     source:
       path: components/configuration/openshift-gitops/base
 
-  event-router:
-    annotations:
-      argocd.argoproj.io/sync-wave: '4'
-    destination:
-      namespace: openshift-logging
-      name: in-cluster
-    source:
-      path: components/apps/event-router/base
-    syncOptions:
-      - CreateNamespace=true
+  # event-router:
+  #   annotations:
+  #     argocd.argoproj.io/sync-wave: '4'
+  #   destination:
+  #     namespace: openshift-logging
+  #     name: *destination
+  #   source:
+  #     path: components/apps/event-router/base
+  #   syncOptions:
+  #     - CreateNamespace=true
 
-  advanced-cluster-security:
-    annotations:
-      argocd.argoproj.io/sync-wave: '4'
-    destination:
-      namespace: stackrox
-      name: in-cluster
-    source:
-      path: components/apps/advanced-cluster-security/overlays/small
-    syncOptions:
-      - CreateNamespace=true
+  # advanced-cluster-security:
+  #   annotations:
+  #     argocd.argoproj.io/sync-wave: '4'
+  #   destination:
+  #     namespace: stackrox
+  #     name: *destination
+  #   source:
+  #     path: components/apps/advanced-cluster-security/overlays/small
+  #   syncOptions:
+  #     - CreateNamespace=true
 
-  falco:
-    annotations:
-      argocd.argoproj.io/sync-wave: '4'
-    destination:
-      namespace: falco
-      name: in-cluster
-    source:
-      path: components/apps/falco/base
-    syncOptions:
-      - CreateNamespace=true
+  # falco:
+  #   annotations:
+  #     argocd.argoproj.io/sync-wave: '4'
+  #   destination:
+  #     namespace: falco
+  #     name: *destination
+  #   source:
+  #     path: components/apps/falco/base
+  #   syncOptions:
+  #     - CreateNamespace=true
