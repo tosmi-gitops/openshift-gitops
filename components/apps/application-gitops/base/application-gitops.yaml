@@ -1,6 +1,10 @@
-apiVersion: argoproj.io/v1alpha1
+apiVersion: argoproj.io/v1beta1
 kind: ArgoCD
 metadata:
+  annotations:
+    argocd.argoproj.io/sync-options: ServerSideApply=true
+  labels:
+    app.kubernetes.io/instance: gitops-config-hub
   name: application-gitops
   namespace: application-gitops
 spec:
@@ -12,6 +16,11 @@ spec:
       requests:
         cpu: 250m
         memory: 512Mi
+    webhookServer:
+      ingress:
+        enabled: false
+      route:
+        enabled: false
   controller:
     processors: {}
     resources:
@@ -21,14 +30,7 @@ spec:
       requests:
         cpu: 250m
         memory: 1Gi
-  dex:
-    resources:
-      limits:
-        cpu: 500m
-        memory: 256Mi
-      requests:
-        cpu: 250m
-        memory: 128Mi
+    sharding: {}
   grafana:
     enabled: false
     ingress:
@@ -52,6 +54,11 @@ spec:
         cpu: 250m
         memory: 128Mi
   initialSSHKnownHosts: {}
+  kustomizeBuildOptions: --enable-helm
+  monitoring:
+    enabled: false
+  notifications:
+    enabled: false
   prometheus:
     enabled: false
     ingress:
@@ -67,34 +74,11 @@ spec:
       requests:
         cpu: 250m
         memory: 128Mi
-  rbac:
-    defaultPolicy: 'role:none'
-    policy: |
-      # Access Control
-      g, system:cluster-admins, role:admin
-      g, cluster-admins, role:admin
-      p, role:none, applications, get, */*, deny
-      p, role:none, certificates, get, *, deny
-      p, role:none, clusters, get, *, deny
-      p, role:none, repositories, get, *, deny
-      p, role:none, projects, get, *, deny
-      p, role:none, accounts, get, *, deny
-      p, role:none, gpgkeys, get, *, deny
-
-      # Adding Roles for specific group, i.e. Developers
-      p, role:developer, applications, get, example-app-1/*, allow
-      p, role:developer, clusters, get, https://kubernetes.default.svc, allow
-      g, developer, role:developer
-
-      p, role:operator, applications, get, example-app-1-prod/*, allow
-      p, role:operator, clusters, get, *, allow
-      g, operations, role:operations
-    scopes: '[groups]'
   repo:
     resources:
       limits:
         cpu: "1"
-        memory: 512Mi
+        memory: 1Gi
       requests:
         cpu: 250m
         memory: 256Mi
@@ -125,5 +109,16 @@ spec:
       enabled: true
     service:
       type: ""
+  sso:
+    dex:
+      openShiftOAuth: true
+      resources:
+        limits:
+          cpu: 500m
+          memory: 256Mi
+        requests:
+          cpu: 250m
+          memory: 128Mi
+    provider: dex
   tls:
     ca: {}
