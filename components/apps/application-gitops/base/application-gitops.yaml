@@ -67,6 +67,29 @@ spec:
       requests:
         cpu: 250m
         memory: 128Mi
+  rbac:
+    defaultPolicy: 'role:none'
+    policy: |
+      # Access Control
+      g, system:cluster-admins, role:admin
+      g, cluster-admins, role:admin
+      p, role:none, applications, get, */*, deny
+      p, role:none, certificates, get, *, deny
+      p, role:none, clusters, get, *, deny
+      p, role:none, repositories, get, *, deny
+      p, role:none, projects, get, *, deny
+      p, role:none, accounts, get, *, deny
+      p, role:none, gpgkeys, get, *, deny
+
+      # Adding Roles for specific group, i.e. Developers
+      p, role:developer, applications, get, example-app-1/*, allow
+      p, role:developer, clusters, get, https://kubernetes.default.svc, allow
+      g, developer, role:developer
+
+      p, role:operator, applications, get, example-app-1-prod/*, allow
+      p, role:operator, clusters, get, *, allow
+      g, operations, role:operations
+    scopes: '[groups]'
   repo:
     resources:
       limits:
