@@ -74,7 +74,16 @@ applications:
       namespace: default
       name: *destination
     source:
-      path: components/configuration/openshift-gitops/base
+      path: components/configuration/openshift-gitops/overlays/multi-project
+
+  application-gitops:
+    annotations:
+      argocd.argoproj.io/sync-wave: '4'
+    destination:
+      namespace: application-gitops
+      name: *destination
+    source:
+      path: components/apps/application-gitops/base
 
   # event-router:
   #   annotations:
