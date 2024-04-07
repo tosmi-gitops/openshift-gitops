@@ -65,7 +65,7 @@ applications:
       namespace: default
       name: *destination
     source:
-      path: components/configuration/groups/base
+      path: components/configuration/groups/overlays/all
 
   gitops-config:
     annotations:
