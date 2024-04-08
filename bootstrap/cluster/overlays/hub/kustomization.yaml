@@ -37,7 +37,7 @@ patches:
         value: in-cluster
       - op: replace
         path: /spec/project
-        value: cluster-config-hub
+        value: cluster-config-managers
       - op: replace
         path: /spec/source/path
         value: clusters/hub/argocd
