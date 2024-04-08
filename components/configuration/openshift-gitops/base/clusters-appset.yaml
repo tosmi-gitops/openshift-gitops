@@ -18,7 +18,8 @@ spec:
       project: cluster-config-managers
       source:
         repoURL: https://github.com/tosmi-gitops/openshift-gitops.git
-        targetRevision: HEAD
+        targetRevision: main
         path: clusters/{{.name}}/argocd
       destination:
+        namespace: openshift-gitops
         name: in-cluster
