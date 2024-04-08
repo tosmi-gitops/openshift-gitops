@@ -1,13 +1,13 @@
 ---
-clustername: &clustername hub
-destination: &destination in-cluster
+clustername: &clustername app
+destination: &destination app
 
 default:
   app:
     enabled: true
     enableAutoSync: false
     autoSyncPrune: false
-    project: cluster-config-hub
+    project: cluster-config-app
     destination:
       namespace: openshift-gitops
       server: https://kubernetes.default.svc
@@ -17,7 +17,7 @@ default:
 
 projects:
 
-  cluster-config-hub:
+  cluster-config-app:
     annotations:
       notifications.argoproj.io/subscribe.on-sync-failed.slack: cluster-gitops
       notifications.argoproj.io/subscribe.on-health-degraded.slack: cluster-gitops
@@ -56,7 +56,7 @@ applications:
       namespace: default
       name: *destination
     source:
-      path: clusters/hub/configuration/console-customization
+      path: clusters/app/configuration/console-customization
 
   groups:
     annotations:
@@ -67,24 +67,6 @@ applications:
     source:
       path: components/configuration/groups/overlays/all
 
-  openshift-gitops-config:
-    annotations:
-      argocd.argoproj.io/sync-wave: '4'
-    destination:
-      namespace: default
-      name: *destination
-    source:
-      path: components/configuration/openshift-gitops/base
-
-  application-gitops:
-    annotations:
-      argocd.argoproj.io/sync-wave: '4'
-    destination:
-      namespace: application-gitops
-      name: *destination
-    source:
-      path: components/apps/application-gitops/overlays/multi-project
-
   # event-router:
   #   annotations:
   #     argocd.argoproj.io/sync-wave: '4'
@@ -93,17 +75,6 @@ applications:
   #     name: *destination
   #   source:
   #     path: components/apps/event-router/base
-  #   syncOptions:
-  #     - CreateNamespace=true
-
-  # advanced-cluster-security:
-  #   annotations:
-  #     argocd.argoproj.io/sync-wave: '4'
-  #   destination:
-  #     namespace: stackrox
-  #     name: *destination
-  #   source:
-  #     path: components/apps/advanced-cluster-security/overlays/small
   #   syncOptions:
   #     - CreateNamespace=true
 
