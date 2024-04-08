@@ -3,3 +3,5 @@ kind: Kustomization
 
 resources:
   - argocd-kustomize-helm.yaml
+  - clusters-appset.yaml
+  - cluster-config-managers-project.yaml

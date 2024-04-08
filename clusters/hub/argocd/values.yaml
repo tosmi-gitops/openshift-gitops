@@ -67,14 +67,14 @@ applications:
     source:
       path: components/configuration/groups/overlays/all
 
-  gitops-config:
+  openshift-gitops-config:
     annotations:
       argocd.argoproj.io/sync-wave: '4'
     destination:
       namespace: default
       name: *destination
     source:
-      path: components/configuration/openshift-gitops/overlays/multi-project
+      path: components/configuration/openshift-gitops/base
 
   application-gitops:
     annotations:
