@@ -1,0 +1,23 @@
+kind: ApplicationSet
+metadata:
+  name: cluster-config-managers
+  namespace: argocd
+spec:
+  goTemplate: true
+  goTemplateOptions: ["missingkey=error"]
+  generators:
+  - clusters:
+      selector:
+        matchLabels:
+          argocd-managed: true
+  template:
+    metadata:
+      name: 'cluster-config-manager-{{.name}}'
+    spec:
+      project: cluster-config-managers
+      Source:
+        repoURL: https://github.com/tosmi-gitops/openshift-gitops.git
+        targetRevision: HEAD
+        path: clusters/{{.name}}/argocd
+      destination:
+        name: in-cluster
