@@ -83,7 +83,7 @@ applications:
       namespace: application-gitops
       name: *destination
     source:
-      path: components/apps/application-gitops/base
+      path: components/apps/application-gitops/overlays/multi-project
 
   # event-router:
   #   annotations:
