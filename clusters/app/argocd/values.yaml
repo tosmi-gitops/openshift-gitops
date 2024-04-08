@@ -1,0 +1,119 @@
+---
+clustername: &clustername hub
+destination: &destination in-cluster
+
+default:
+  app:
+    enabled: true
+    enableAutoSync: false
+    autoSyncPrune: false
+    project: cluster-config-hub
+    destination:
+      namespace: openshift-gitops
+      server: https://kubernetes.default.svc
+    source:
+      repoURL: https://github.com/tosmi-gitops/openshift-gitops.git
+      targetRevision: HEAD
+
+projects:
+
+  cluster-config-hub:
+    annotations:
+      notifications.argoproj.io/subscribe.on-sync-failed.slack: cluster-gitops
+      notifications.argoproj.io/subscribe.on-health-degraded.slack: cluster-gitops
+    description: Project for overall cluster configuration
+    namespace: openshift-gitops
+    sourceRepos:
+      - https://github.com/tosmi-gitops/openshift-gitops
+      - https://github.com/redhat-cop/gitops-catalog
+    # - https://github.com/gnunn1/gitops-catalog
+    # - https://github.com/gnunn-gitops/acm-hub-bootstrap
+    # - https://github.com/gnunn1/dev-console-plugin
+    destinations: |
+      - namespace: '*'
+        server: https://kubernetes.default.svc
+    extraFields: |
+      clusterResourceWhitelist:
+      - group: '*'
+        kind: '*'
+
+applications:
+
+  oauth-htpasswd:
+    annotations:
+      argocd.argoproj.io/sync-wave: '4'
+      argocd.argoproj.io/compare-options: IgnoreExtraneous
+    destination:
+      namespace: default
+      name: *destination
+    source:
+      path: components/configuration/oauth/overlays/htpasswd
+
+  console-customization:
+    annotations:
+      argocd.argoproj.io/sync-wave: '4'
+    destination:
+      namespace: default
+      name: *destination
+    source:
+      path: clusters/hub/configuration/console-customization
+
+  groups:
+    annotations:
+      argocd.argoproj.io/sync-wave: '4'
+    destination:
+      namespace: default
+      name: *destination
+    source:
+      path: components/configuration/groups/overlays/all
+
+  openshift-gitops-config:
+    annotations:
+      argocd.argoproj.io/sync-wave: '4'
+    destination:
+      namespace: default
+      name: *destination
+    source:
+      path: components/configuration/openshift-gitops/base
+
+  application-gitops:
+    annotations:
+      argocd.argoproj.io/sync-wave: '4'
+    destination:
+      namespace: application-gitops
+      name: *destination
+    source:
+      path: components/apps/application-gitops/overlays/multi-project
+
+  # event-router:
+  #   annotations:
+  #     argocd.argoproj.io/sync-wave: '4'
+  #   destination:
+  #     namespace: openshift-logging
+  #     name: *destination
+  #   source:
+  #     path: components/apps/event-router/base
+  #   syncOptions:
+  #     - CreateNamespace=true
+
+  # advanced-cluster-security:
+  #   annotations:
+  #     argocd.argoproj.io/sync-wave: '4'
+  #   destination:
+  #     namespace: stackrox
+  #     name: *destination
+  #   source:
+  #     path: components/apps/advanced-cluster-security/overlays/small
+  #   syncOptions:
+  #     - CreateNamespace=true
+
+  # falco:
+  #   annotations:
+  #     argocd.argoproj.io/sync-wave: '4'
+  #   destination:
+  #     namespace: falco
+  #     name: *destination
+  #   source:
+  #     path: components/apps/falco/base
+  #   syncOptions:
+  #     - CreateNamespace=true

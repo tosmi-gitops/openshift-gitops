@@ -11,7 +11,7 @@ patches:
     patch: |-
       - op: replace
         path: /spec/backgroundColor
-        value: '#3A683A'
+        value: '#208811'
       - op: replace
         path: /spec/color
         value: '#080808'
