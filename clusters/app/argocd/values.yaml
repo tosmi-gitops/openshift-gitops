@@ -31,7 +31,7 @@ projects:
     # - https://github.com/gnunn1/dev-console-plugin
     destinations: |
       - namespace: '*'
-        server: https://kubernetes.default.svc
+        server: https://api.app.aws.tntinfra.net:6443
     extraFields: |
       clusterResourceWhitelist:
       - group: '*'
