@@ -10,7 +10,7 @@ default:
     project: cluster-config-app
     destination:
       namespace: openshift-gitops
-      server: https://kubernetes.default.svc
+      server: https://api.app.aws.tntinfra.net:6443
     source:
       repoURL: https://github.com/tosmi-gitops/openshift-gitops.git
       targetRevision: HEAD
