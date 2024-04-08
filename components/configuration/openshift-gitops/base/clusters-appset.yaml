@@ -10,7 +10,7 @@ spec:
   - clusters:
       selector:
         matchLabels:
-          argocd-managed: true
+          argocd-managed: "true"
   template:
     metadata:
       name: 'cluster-config-manager-{{.name}}'
