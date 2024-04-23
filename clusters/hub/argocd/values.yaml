@@ -85,6 +85,17 @@ applications:
     source:
       path: components/apps/application-gitops/overlays/multi-project
 
+  shipwright:
+    annotations:
+      argocd.argoproj.io/sync-wave: '4'
+    destination:
+      namespace: openshift-operators
+      name: *destination
+    source:
+      path: components/apps/shipwright/base
+    syncOptions:
+      - CreateNamespace=true
+
   # event-router:
   #   annotations:
   #     argocd.argoproj.io/sync-wave: '4'
