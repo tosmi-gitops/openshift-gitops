@@ -1,5 +1,5 @@
 ---
-clustername: &clustername hub
+clustername: &clustername sno
 destination: &destination in-cluster
 
 default:
@@ -17,7 +17,7 @@ default:
 
 projects:
 
-  cluster-config-sno:
+  *clustername:
     annotations:
       notifications.argoproj.io/subscribe.on-sync-failed.slack: cluster-gitops
       notifications.argoproj.io/subscribe.on-health-degraded.slack: cluster-gitops
