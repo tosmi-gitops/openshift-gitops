@@ -1,0 +1,24 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cluster-config-manager-
+  namespace: openshift-gitops
+  labels:
+    gitops.ownedBy: cluster-config
+spec:
+  destination:
+    namespace: openshift-gitops
+    name: replaceme
+  project: replaceme
+  source:
+    path: replaceme
+    repoURL: https://github.com/tosmi-gitops/openshift-gitops.git
+    targetRevision: main
+  syncPolicy:
+  # currently we do not want autosync
+  # setting selfHeal to false does not work because of a bug
+  # see https://github.com/argoproj/argo-cd/issues/3895
+  # automated:
+  #  prune: false
+  #  selfHeal: false
