@@ -1,0 +1,16 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ../../../../components/configuration/openshift-gitops/base
+
+patches:
+  - target:
+      kind: AppProject
+      name: cluster-config-managers
+      namespace: openshift-gitops
+    patch: |-
+      - op: replace
+        path: /spec/destinations/0/name
+        value: sno-home

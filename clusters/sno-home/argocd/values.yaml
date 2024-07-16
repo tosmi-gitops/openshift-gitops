@@ -16,7 +16,7 @@ default:
 
 projects:
 
-  *clustername:
+  cluster-config-sno-home:
     annotations:
       notifications.argoproj.io/subscribe.on-sync-failed.slack: cluster-gitops
       notifications.argoproj.io/subscribe.on-health-degraded.slack: cluster-gitops
@@ -73,7 +73,7 @@ applications:
       namespace: default
       name: *clustername
     source:
-      path: components/configuration/openshift-gitops/base
+      path: clusters/sno-home/configuration/openshift-gitops/
 
   # falco:
   #   annotations:
