@@ -5,3 +5,4 @@ resources:
   - nmstate-namespace.yaml
   - nmstate-operatorgroup.yaml
   - nmstate-subscription.yaml
+  - nmstate.yaml
