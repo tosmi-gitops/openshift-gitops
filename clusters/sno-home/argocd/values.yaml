@@ -1,13 +1,12 @@
 ---
 clustername: &clustername sno-home
-destination: &destination in-cluster
 
 default:
   app:
     enabled: true
     enableAutoSync: false
     autoSyncPrune: false
-    project: cluster-config-hub
+    project: cluster-config-sno-home
     destination:
       namespace: openshift-gitops
       server: https://kubernetes.default.svc
@@ -56,7 +55,7 @@ applications:
       namespace: default
       name: *destination
     source:
-      path: clusters/sno/configuration/console-customization
+      path: clusters/sno-home/configuration/console-customization
 
   groups:
     annotations:

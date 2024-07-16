@@ -27,6 +27,6 @@ spec:
       kind: '*'
   destinations:
     - namespace: 'openshift-gitops'
-      name: 'sno-home'
+      name: 'in-cluster'
   sourceRepos:
     - https://github.com/tosmi-gitops/openshift-gitops.git
