@@ -10,5 +10,5 @@ spec:
     "name": "bridge-network",
     "type": "cnv-bridge",
     "bridge": "brvirt1",
-    "macspoofchk": true,
+    "macspoofchk": true
   }'
