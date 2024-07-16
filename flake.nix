@@ -1,5 +1,5 @@
 {
-  description = "A basic flake with a shell";
+  description = "GitOps Tools";
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
   inputs.flake-utils.url = "github:numtide/flake-utils";
 
@@ -10,7 +10,7 @@
       in
       {
         devShells.default = pkgs.mkShell {
-          packages = [ pkgs.bashInteractive pkgs.kustomize ];
+          packages = [ pkgs.bashInteractive pkgs.kustomize pkgs.argocd ];
         };
       });
 }
