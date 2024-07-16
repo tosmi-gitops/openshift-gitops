@@ -44,7 +44,7 @@ applications:
       argocd.argoproj.io/compare-options: IgnoreExtraneous
     destination:
       namespace: default
-      name: *destination
+      name: *clustername
     source:
       path: components/configuration/oauth/overlays/htpasswd
 
@@ -53,7 +53,7 @@ applications:
       argocd.argoproj.io/sync-wave: '4'
     destination:
       namespace: default
-      name: *destination
+      name: *clustername
     source:
       path: clusters/sno-home/configuration/console-customization
 
@@ -62,7 +62,7 @@ applications:
       argocd.argoproj.io/sync-wave: '4'
     destination:
       namespace: default
-      name: *destination
+      name: *clustername
     source:
       path: components/configuration/groups/base
 
@@ -71,7 +71,7 @@ applications:
       argocd.argoproj.io/sync-wave: '4'
     destination:
       namespace: default
-      name: *destination
+      name: *clustername
     source:
       path: components/configuration/openshift-gitops/base
 
@@ -80,7 +80,7 @@ applications:
   #     argocd.argoproj.io/sync-wave: '4'
   #   destination:
   #     namespace: falco
-  #     name: *destination
+  #     name: *clustername
   #   source:
   #     path: components/apps/falco/base
   #   syncOptions:
@@ -91,6 +91,6 @@ applications:
   #     argocd.argoproj.io/sync-wave: '4'
   #   destination:
   #     namespace: openshift-gitops
-  #     name: *destination
+  #     name: *clustername
   #   source:
   #     path: components/configuration/onboarding/base
