@@ -84,6 +84,15 @@ applications:
     source:
       path: components/apps/openshift-nmstate/base
 
+  virt-network:
+    annotations:
+      argocd.argoproj.io/sync-wave: '4'
+    destination:
+      namespace: default
+      name: *clustername
+    source:
+      path: clusters/sno-home/configuration/network/
+
   # falco:
   #   annotations:
   #     argocd.argoproj.io/sync-wave: '4'
