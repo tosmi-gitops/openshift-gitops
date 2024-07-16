@@ -10,7 +10,7 @@ spec:
         type: linux-bridge
         state: up
         ipv4:
-          enabled: true
+          enabled: false
         bridge:
           options:
             stp:
