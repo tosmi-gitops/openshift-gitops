@@ -10,7 +10,7 @@
       in
       {
         devShells.default = pkgs.mkShell {
-          packages = [ pkgs.bashInteractive pkgs.kustomize pkgs.argocd pkgs.kubernetes-helm];
+          packages = [ pkgs.bashInteractive pkgs.kustomize pkgs.argocd pkgs.kubernetes-helm pkgs.kubevirt pkgs.tigervnc ];
         };
       });
 }
