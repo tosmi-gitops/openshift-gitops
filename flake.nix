@@ -1,5 +1,5 @@
 {
-  description = "GitOps Tools";
+  description = "Playground Tools";
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
   inputs.flake-utils.url = "github:numtide/flake-utils";
 
@@ -10,7 +10,13 @@
       in
       {
         devShells.default = pkgs.mkShell {
-          packages = [ pkgs.bashInteractive pkgs.kustomize pkgs.argocd pkgs.kubernetes-helm pkgs.kubevirt pkgs.tigervnc ];
+          packages = [
+            pkgs.bashInteractive
+
+            pkgs.kustomize
+            pkgs.argocd
+            pkgs.kubernetes-helm
+          ];
         };
       });
 }
