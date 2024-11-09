@@ -1,0 +1,17 @@
+kind: Kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+
+resources:
+  - ../../base
+
+patches:
+  - target:
+      kind: APIServer
+      name: cluster
+    patch: |-
+      - op: replace
+        path: /spec/audit/profile
+        value: None
+      - op: add
+        path: /metadata/annotations/include.release.openshift.io~1single-node-developer
+        value: "true"
