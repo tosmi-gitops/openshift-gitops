@@ -107,6 +107,17 @@ applications:
     syncOptions:
       - CreateNamespace=true
 
+  multi-cluster-hub:
+    annotations:
+      argocd.argoproj.io/sync-wave: '5'
+    destination:
+      namespace: open-cluster-management
+      name: *destination
+    source:
+      path: components/apps/multi-cluster-hub/base
+    syncOptions:
+      - CreateNamespace=true
+
   # event-router:
   #   annotations:
   #     argocd.argoproj.io/sync-wave: '4'
