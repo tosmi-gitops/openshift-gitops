@@ -96,6 +96,17 @@ applications:
     syncOptions:
       - CreateNamespace=true
 
+  advanced-cluster-manager:
+    annotations:
+      argocd.argoproj.io/sync-wave: '4'
+    destination:
+      namespace: open-cluster-management
+      name: *destination
+    source:
+      path: components/apps/advanced-cluster-management/overlays/release-2.12
+    syncOptions:
+      - CreateNamespace=true
+
   # event-router:
   #   annotations:
   #     argocd.argoproj.io/sync-wave: '4'
