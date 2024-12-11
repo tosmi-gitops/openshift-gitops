@@ -118,6 +118,17 @@ applications:
     syncOptions:
       - CreateNamespace=true
 
+  multi-cluster-observability:
+    annotations:
+      argocd.argoproj.io/sync-wave: '5'
+    destination:
+      namespace: open-cluster-management
+      name: *destination
+    source:
+      path: components/configuration/multi-cluster-observability/base
+    syncOptions:
+      - CreateNamespace=true
+
   # event-router:
   #   annotations:
   #     argocd.argoproj.io/sync-wave: '4'
