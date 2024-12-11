@@ -1,0 +1,60 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: open-cluster-management-observability
+  labels:
+    openshift.io/cluster-monitoring: "true"
+  annotations:
+    # we will need a presync hook to copy the pull secret
+    # all hook run in wave 0 per default
+    # so first create the namespace
+    argocd.argoproj.io/sync-wave: "-1"
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: copy-pull-secret
+  namespace:  openshift-gitops
+  annotations:
+    argocd.argoproj.io/hook: Sync
+    # argocd.argoproj.io/hook-delete-policy: HookSucceeded
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  template:
+    metadata:
+      name: copy-pull-secret
+    spec:
+      containers:
+        - name: copy-pull-secret
+          image: registry.redhat.io/openshift4/ose-cli:latest
+          command:
+            - /bin/bash
+            - -c
+            - |
+              #!/usr/bin/env bash
+
+              printf "\nTrying to copy pull-secret to open-cluster-management-observability namespace...\n"
+
+              DOCKER_CONFIG_JSON=`oc extract secret/pull-secret -n openshift-config --to=-`
+
+              oc create secret generic multiclusterhub-operator-pull-secret \
+                -n open-cluster-management-observability \
+                --from-literal=.dockerconfigjson="$DOCKER_CONFIG_JSON" \
+                --type=kubernetes.io/dockerconfigjson
+
+      restartPolicy: Never
+      serviceAccountName: openshift-gitops-argocd-application-controller
+---
+apiVersion: observability.open-cluster-management.io/v1beta2
+kind: MultiClusterObservability
+metadata:
+  name: observability
+  annotations:
+    argocd.argoproj.io/sync-wave: "4"
+spec:
+  observabilityAddonSpec: {}
+  storageConfig:
+    metricObjectStorage:
+      name: thanos-object-storage
+      key: thanos.yaml
