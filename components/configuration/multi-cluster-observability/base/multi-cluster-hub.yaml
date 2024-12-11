@@ -28,6 +28,14 @@ spec:
       containers:
         - name: copy-pull-secret
           image: registry.redhat.io/openshift4/ose-cli:latest
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            seccompProfile:
+              type: "RuntimeDefault"
+            capabilities:
+              drop:
+                - "ALL"
           command:
             - /bin/bash
             - -c
