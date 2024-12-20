@@ -13,6 +13,7 @@
           packages = [
             pkgs.bashInteractive
 
+            pkgs.kubeseal
             pkgs.kustomize
             pkgs.argocd
             pkgs.kubernetes-helm

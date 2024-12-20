@@ -1,0 +1,14 @@
+# so we don't have to tell kubeseal the controller name
+# --controller-name
+fullnameOverride: sealed-secrets-controller
+
+# -- Target Namespace
+namespace: sealed-secrets
+
+  # -- Dont touch the security context values, deployment will fail in OpenShift otherwise.
+podSecurityContext:
+  enabled: false
+
+  # -- Dont touch the security context values, deployment will fail in OpenShift otherwise.
+containerSecurityContext:
+  enabled: false
