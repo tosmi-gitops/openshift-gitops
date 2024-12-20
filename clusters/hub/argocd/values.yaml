@@ -67,6 +67,24 @@ applications:
     source:
       path: components/configuration/groups/overlays/all
 
+  custom-ca:
+    annotations:
+      argocd.argoproj.io/sync-wave: '4'
+    destination:
+      namespace: openshift-config
+      name: *destination
+    source:
+      path: components/configuration/custom-ca/base
+
+  ingress-default:
+    annotations:
+      argocd.argoproj.io/sync-wave: '4'
+    destination:
+      namespace: openshift-config
+      name: *destination
+    source:
+      path: clusters/hub/configuration/ingress
+
   openshift-gitops-config:
     annotations:
       argocd.argoproj.io/sync-wave: '4'
