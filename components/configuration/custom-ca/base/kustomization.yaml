@@ -6,3 +6,7 @@ namespace: openshift-config
 resources:
   - tntinfra-ca-crt.yaml
   - proxy-config.yaml
+  # this resource is automatically created by an operator
+  # to avoid pruning we define it hire and use ignoreDifferences
+  # in the argo app
+  - openshift-user-ca.yaml
