@@ -1,0 +1,4 @@
+isOpenShift: true
+
+image:
+  tag: 11.3.2
