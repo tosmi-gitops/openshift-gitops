@@ -1,0 +1,34 @@
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  labels:
+    operators.coreos.com/power-monitoring-operator.openshift-operators: ""
+  name: power-monitoring-operator
+  namespace: openshift-operators
+spec:
+  channel: tech-preview
+  installPlanApproval: Manual
+  name: power-monitoring-operator
+  source: redhat-operators
+  sourceNamespace: openshift-marketplace
+...
+---
+apiVersion: kepler.system.sustainable.computing.io/v1alpha1
+kind: Kepler
+metadata:
+  name: kepler
+  labels:
+    app.kubernetes.io/instance: kepler
+    app.kubernetes.io/name: kepler
+    app.kubernetes.io/part-of: kepler-operator
+spec:
+  exporter:
+    deployment:
+      port: 9103
+      tolerations:
+        - operator: Exists
+    redfish:
+      probeInterval: 60s
+      skipSSLVerify: false
+...
