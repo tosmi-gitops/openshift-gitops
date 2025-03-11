@@ -102,7 +102,7 @@ applications:
     source:
       path: components/configuration/apiserver/overlays/sno
 
-  apiserver:
+  nfs-subdir-external-provisioner:
     annotations:
       argocd.argoproj.io/sync-wave: '4'
     destination:
