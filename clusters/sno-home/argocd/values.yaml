@@ -102,14 +102,14 @@ applications:
     source:
       path: components/configuration/apiserver/overlays/sno
 
-  nfs-subdir-external-provisioner:
+  nfs-subdir-provisioner:
     annotations:
       argocd.argoproj.io/sync-wave: '4'
     destination:
       namespace: default
       name: *clustername
     source:
-      path: components/apps/nfs-subdir-external-provisioner/base
+      path: components/apps/nfs-subdir-provisioner/base
 
   # falco:
   #   annotations:
