@@ -13,4 +13,4 @@ patches:
     patch: |-
       - op: replace
         path: /spec/text
-        value: HUBTUWIEN
+        value: HUB CLUSTER
