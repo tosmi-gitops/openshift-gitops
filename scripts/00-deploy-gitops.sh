@@ -1,10 +1,13 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 set -euf -o pipefail
 
 OVERLAY=${1:-default}
 KUSTOMIZE="/usr/bin/env kustomize"
+OC="/usr/bin/env oc"
 GITOPSNS="openshift-gitops"
+
+CLUSTER=$($OC whoami --show-server)
 
 RED=$(tput setaf 1)
 NC=$(tput sgr0)
@@ -51,9 +54,10 @@ function wait_for_route() {
 }
 
 if [ "$OVERLAY" == "default" ]; then
-
     cat<<EOF
 This will bootstrap the GitOps operator with the ${RED}${OVERLAY}${NC} overlay.
+
+You are currently connected to ${RED}${CLUSTER}${NC}!
 
 If this is not what you want you can specify a different overlay via
 $0 <overlay name>
@@ -61,7 +65,9 @@ $0 <overlay name>
 EOF
 
     echo -e "Currently this repo supports the following overlays:\n"
-    ls -1 bootstrap/gitops/overlays/
+    for overlay in $(ls -1 bootstrap/gitops/overlays/); do
+	echo "- $overlay"
+    done
 
     echo -e "\nHit CTRL+C now to specify a different overlay than '$OVERLAY'"
     sleep 5
