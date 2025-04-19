@@ -7,8 +7,10 @@ namespace: sealed-secrets
 
   # -- Dont touch the security context values, deployment will fail in OpenShift otherwise.
 podSecurityContext:
-  enabled: false
+  fsGroup:
+  #enabled: false
 
   # -- Dont touch the security context values, deployment will fail in OpenShift otherwise.
 containerSecurityContext:
-  enabled: false
+  runAsUser:
+  #enabled: false

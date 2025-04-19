@@ -6,7 +6,7 @@ namespace: sealed-secrets
 
 helmCharts:
   - name: sealed-secrets
-    version: 2.17.0
+    version: 2.17.2
     valuesFile: values.yaml
     namespace: sealed-secrets
     releaseName: sealed-secrets

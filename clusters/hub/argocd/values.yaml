@@ -162,6 +162,16 @@ applications:
     source:
       path: components/apps/aap/overlays/stable-2.5
 
+
+  sealed-secrets:
+    annotations:
+      argocd.argoproj.io/sync-wave: '5'
+    destination:
+      namespace: sealed-secrets
+      name: *destination
+    source:
+      path: components/apps/sealed-secrets/base
+
   # event-router:
   #   annotations:
   #     argocd.argoproj.io/sync-wave: '4'
