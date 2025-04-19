@@ -153,6 +153,15 @@ applications:
     syncOptions:
       - CreateNamespace=true
 
+  ansible-platform-operator-25:
+    annotations:
+      argocd.argoproj.io/sync-wave: '5'
+    destination:
+      namespace: app
+      name: *destination
+    source:
+      path: components/apps/aap/overlays/stable-2.5
+
   # event-router:
   #   annotations:
   #     argocd.argoproj.io/sync-wave: '4'
