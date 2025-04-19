@@ -1,0 +1,12 @@
+kind: Kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+
+resources:
+  - ../../../../components/apps/vector/base
+
+configMapGenerator:
+  - name: vector-variables
+    options:
+      disableNameSuffixHash: true
+    literals:
+      - CLUSTERNAME=sno

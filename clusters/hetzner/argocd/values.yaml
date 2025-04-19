@@ -1,0 +1,135 @@
+---
+clustername: &clustername hetzner
+
+default:
+  app:
+    enabled: true
+    enableAutoSync: false
+    autoSyncPrune: false
+    project: cluster-config-hetzner
+    destination:
+      namespace: openshift-gitops
+      server: https://kubernetes.default.svc
+    source:
+      repoURL: https://github.com/tosmi-gitops/openshift-gitops.git
+      targetRevision: HEAD
+
+projects:
+
+  cluster-config-hetzner:
+    annotations:
+      notifications.argoproj.io/subscribe.on-sync-failed.slack: cluster-gitops
+      notifications.argoproj.io/subscribe.on-health-degraded.slack: cluster-gitops
+    description: Project for overall cluster configuration
+    namespace: openshift-gitops
+    sourceRepos:
+      - https://github.com/tosmi-gitops/openshift-gitops
+      - https://github.com/redhat-cop/gitops-catalog
+    # - https://github.com/gnunn1/gitops-catalog
+    # - https://github.com/gnunn-gitops/acm-hub-bootstrap
+    # - https://github.com/gnunn1/dev-console-plugin
+    destinations: |
+      - namespace: '*'
+        server: https://kubernetes.default.svc
+    extraFields: |
+      clusterResourceWhitelist:
+      - group: '*'
+        kind: '*'
+
+applications:
+
+  oauth-htpasswd:
+    annotations:
+      argocd.argoproj.io/sync-wave: '4'
+      argocd.argoproj.io/compare-options: IgnoreExtraneous
+    destination:
+      namespace: default
+      name: *clustername
+    source:
+      path: components/configuration/oauth/overlays/htpasswd
+
+  console-customization:
+    annotations:
+      argocd.argoproj.io/sync-wave: '4'
+    destination:
+      namespace: default
+      name: *clustername
+    source:
+      path: clusters/hetzner/configuration/console-customization
+
+  groups:
+    annotations:
+      argocd.argoproj.io/sync-wave: '4'
+    destination:
+      namespace: default
+      name: *clustername
+    source:
+      path: components/configuration/groups/base
+
+  gitops-config:
+    annotations:
+      argocd.argoproj.io/sync-wave: '4'
+    destination:
+      namespace: default
+      name: *clustername
+    source:
+      path: clusters/hetzner/configuration/openshift-gitops/
+
+  # this sets the audit profile to None
+  #
+  apiserver:
+    annotations:
+      argocd.argoproj.io/sync-wave: '4'
+    destination:
+      namespace: default
+      name: *clustername
+    source:
+      path: components/configuration/apiserver/overlays/sno
+
+  # openshift-nmstate:
+  #   annotations:
+  #     argocd.argoproj.io/sync-wave: '4'
+  #   destination:
+  #     namespace: default
+  #     name: *clustername
+  #   source:
+  #     path: components/apps/openshift-nmstate/base
+
+  # virt-network:
+  #   annotations:
+  #     argocd.argoproj.io/sync-wave: '4'
+  #   destination:
+  #     namespace: default
+  #     name: *clustername
+  #   source:
+  #     path: clusters/hetzner/configuration/network/
+
+
+  # nfs-subdir-provisioner:
+  #   annotations:
+  #     argocd.argoproj.io/sync-wave: '4'
+  #   destination:
+  #     namespace: default
+  #     name: *clustername
+  #   source:
+  #     path: components/apps/nfs-subdir-provisioner/base
+
+  # falco:
+  #   annotations:
+  #     argocd.argoproj.io/sync-wave: '4'
+  #   destination:
+  #     namespace: falco
+  #     name: *clustername
+  #   source:
+  #     path: components/apps/falco/base
+  #   syncOptions:
+  #     - CreateNamespace=true
+
+  # onboarding:
+  #   annotations:
+  #     argocd.argoproj.io/sync-wave: '4'
+  #   destination:
+  #     namespace: openshift-gitops
+  #     name: *clustername
+  #   source:
+  #     path: components/configuration/onboarding/base

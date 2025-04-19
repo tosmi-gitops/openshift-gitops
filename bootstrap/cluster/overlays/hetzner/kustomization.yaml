@@ -1,0 +1,51 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ../../base
+
+  # Everything else is managed by ArgoCD
+  - cluster-config-project.yaml
+  - tenants-project.yaml
+  - cluster-config-manager-app.yaml
+
+patches:
+  - target:
+      kind: AppProject
+      name: cluster-config-managers
+    patch: |-
+      - op: replace
+        path: /spec/destinations/0/name
+        value: hetzner
+
+  - target:
+      kind: AppProject
+      name: replaceme
+    patch: |-
+      - op: replace
+        path: /metadata/name
+        value: cluster-config-hetzner
+      - op: replace
+        path: /spec/destinations/0/name
+        value: hetzner
+      - op: replace
+        path: /spec/destinations/1/name
+        value: hetzner
+
+  - target:
+      kind: Application
+      name: cluster-config-manager-
+    patch: |-
+      - op: replace
+        path: /metadata/name
+        value: cluster-config-manager-hetzner
+      - op: replace
+        path: /spec/destination/name
+        value: hetzner
+      - op: replace
+        path: /spec/project
+        value: cluster-config-managers
+      - op: replace
+        path: /spec/source/path
+        value: clusters/hetzner/argocd
