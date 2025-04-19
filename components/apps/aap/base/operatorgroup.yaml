@@ -1,0 +1,10 @@
+apiVersion: operators.coreos.com/v1
+kind: OperatorGroup
+metadata:
+  generateName: aap-
+  name: aap-xzdhz
+  namespace: aap
+spec:
+  targetNamespaces:
+  - aap
+  upgradeStrategy: Default
