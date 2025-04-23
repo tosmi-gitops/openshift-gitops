@@ -17,6 +17,7 @@
             pkgs.kustomize
             pkgs.argocd
             pkgs.kubernetes-helm
+            pkgs.stern
           ];
         };
       });
