@@ -1,0 +1,27 @@
+kind: Kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+
+resources:
+  - ../../base
+
+patches:
+  - target:
+      kind: AnsibleAutomationPlatform
+      name: tntinfra
+      namespace: aap
+    patch: |-
+      - op: replace
+        path: /metadata/name
+        value: tntinfra-dev
+      - op: replace
+        path: /metadata/namespace
+        value: aap-dev
+      - op: replace
+        path: /spec/eda/disabled
+        value: true
+      - op: replace
+        path: /spec/hub/disabled
+        value: true
+      - op: replace
+        path: /spec/route_host
+        value: aap-dev.apps.hub.aws.tntinfra.net
