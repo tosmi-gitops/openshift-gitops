@@ -114,7 +114,7 @@ applications:
       argocd.argoproj.io/sync-wave: '4'
     destination:
       namespace: openshift-operators
-      name: *clustername
+      name: *destination
     source:
       path: components/apps/openshift-pipelines/base
 
