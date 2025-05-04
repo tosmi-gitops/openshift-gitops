@@ -109,6 +109,15 @@ applications:
     source:
       path: components/apps/application-gitops/overlays/multi-project
 
+  openshift-pipelines:
+    annotations:
+      argocd.argoproj.io/sync-wave: '4'
+    destination:
+      namespace: openshift-operators
+      name: *clustername
+    source:
+      path: components/apps/openshift-pipelines/base
+
   shipwright:
     annotations:
       argocd.argoproj.io/sync-wave: '4'
