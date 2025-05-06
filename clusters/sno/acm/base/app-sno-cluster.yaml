@@ -1,0 +1,162 @@
+---
+apiVersion: hive.openshift.io/v1
+kind: ClusterDeployment
+metadata:
+  name: app
+  namespace: app
+  labels:
+    cloud: AWS
+    region: us-west-2
+    vendor: OpenShift
+    cluster.open-cluster-management.io/clusterset: default
+spec:
+  baseDomain: aws.tntinfra.net
+  clusterName: app
+  controlPlaneConfig:
+    servingCertificates: {}
+  installAttemptsLimit: 1
+  installed: false
+  platform:
+    aws:
+      credentialsSecretRef:
+        name: app-aws-creds
+      region: us-west-2
+  provisioning:
+    installConfigSecretRef:
+      name: app-install-config
+    sshPrivateKeySecretRef:
+      name: app-ssh-private-key
+    imageSetRef:
+      name: img4.14.10-x86-64-appsub
+  pullSecretRef:
+    name: app-pull-secret
+---
+apiVersion: cluster.open-cluster-management.io/v1
+kind: ManagedCluster
+metadata:
+  name: app
+  labels:
+    name: app
+    cloud: Amazon
+    region: us-west-2
+    vendor: OpenShift
+    cluster.open-cluster-management.io/clusterset: default
+spec:
+  hubAcceptsClient: true
+---
+apiVersion: hive.openshift.io/v1
+kind: MachinePool
+metadata:
+  name: app-worker
+  namespace: app
+spec:
+  name: worker
+  clusterDeploymentRef:
+    name: app
+  platform:
+    aws:
+      rootVolume:
+        iops: 2000
+        size: 100
+        type: io1
+      type: m5.xlarge
+  replicas: 0
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: app-pull-secret
+  namespace: app
+stringData:
+  .dockerconfigjson:
+type: kubernetes.io/dockerconfigjson
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: app-install-config
+  namespace: app
+type: Opaque
+stringData:
+  install-config.yaml: |
+    apiVersion: v1
+    metadata:
+      name: app
+    baseDomain: aws.tntinfra.net
+    controlPlane:
+      name: master
+      hyperthreading: Enabled
+      replicas: 1
+      platform:
+        aws:
+          rootVolume:
+            iops: 4000
+            size: 100
+            type: io1
+          type: m5.xlarge
+      architecture: amd64
+    compute:
+      - name: worker
+        hyperthreading: Enabled
+        replicas: 0
+        platform:
+          aws:
+            rootVolume:
+              iops: 2000
+              size: 100
+              type: io1
+            type: m5.xlarge
+        architecture: amd64
+    networking:
+      networkType: OVNKubernetes
+      clusterNetwork:
+        - cidr: 10.128.0.0/14
+          hostPrefix: 23
+      machineNetwork:
+        - cidr: 10.0.0.0/16
+      serviceNetwork:
+        - 172.30.0.0/16
+    platform:
+      aws:
+        region: us-west-2
+    pullSecret: ''
+    sshKey: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJMs63blQ7iHyMrEufvU5Agbqx4WE60o69dpJSkp+aAm
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: app-ssh-private-key
+  namespace: app
+stringData:
+  ssh-privatekey:
+type: Opaque
+---
+apiVersion: v1
+kind: Secret
+type: Opaque
+metadata:
+  name: app-aws-creds
+  namespace: app
+stringData:
+  aws_access_key_id:
+  aws_secret_access_key:
+---
+apiVersion: agent.open-cluster-management.io/v1
+kind: KlusterletAddonConfig
+metadata:
+  name: app
+  namespace: app
+spec:
+  clusterName: app
+  clusterNamespace: app
+  clusterLabels:
+    cloud: Amazon
+    vendor: OpenShift
+  applicationManager:
+    enabled: true
+  policyController:
+    enabled: true
+  searchCollector:
+    enabled: true
+  certPolicyController:
+    enabled: true
