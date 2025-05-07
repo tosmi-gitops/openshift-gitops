@@ -1,5 +1,5 @@
 ---
-clustername: &clustername hetzner
+clustername: &clustername in-cluster
 
 default:
   app:
