@@ -1,0 +1,20 @@
+apiVersion: machineconfiguration.openshift.io/v1
+kind: MachineConfig
+metadata:
+  labels:
+    machineconfiguration.openshift.io/role: master
+  name: stop-rpc-bind-socket
+spec:
+  config:
+    ignition:
+      version: 3.2.0
+    systemd:
+      units:
+        - name: stop-rpc-bind-socket.service
+          enabled: true
+          contents: |
+            [Service]
+            Type=oneshot
+            ExecStart=/usr/bin/systemctl stop rpcbind.socket
+            [Install]
+            WantedBy=multi-user.target
