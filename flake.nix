@@ -13,11 +13,15 @@
           packages = [
             pkgs.bashInteractive
 
+            pkgs.pre-commit
+            pkgs.gitleaks
+
             pkgs.kubeseal
             pkgs.kustomize
             pkgs.argocd
             pkgs.kubernetes-helm
             pkgs.stern
+            pkgs.yamllint
           ];
         };
       });

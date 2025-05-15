@@ -1,0 +1,27 @@
+---
+repos:
+  - repo: 'https://github.com/pre-commit/pre-commit-hooks'
+    rev: v4.5.0
+    hooks:
+      # - id: no-commit-to-branch
+      - id: check-added-large-files
+      - id: check-merge-conflict
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+        exclude: syntax_highlighting_demo.yml
+
+  - repo: https://github.com/adrienverge/yamllint.git
+    rev: v1.29.0
+    hooks:
+      - id: yamllint
+        name: yamllint
+        description: This hook runs yamllint.
+        entry: yamllint
+        language: python
+        types: [file, yaml]
+        args: [--strict]
+
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.26.0
+    hooks:
+      - id: gitleaks
