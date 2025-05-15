@@ -20,6 +20,7 @@ projects:
   cluster-config-hub:
     annotations:
       notifications.argoproj.io/subscribe.on-sync-failed.slack: cluster-gitops
+      # yamllint disable-line rule:line-length
       notifications.argoproj.io/subscribe.on-health-degraded.slack: cluster-gitops
     description: Project for overall cluster configuration
     namespace: openshift-gitops
@@ -136,6 +137,16 @@ applications:
       path: components/application/openshift-servicemesh/overlays/stable-3.0
 
 
+  openshift-servicemesh-default:
+    annotations:
+      argocd.argoproj.io/sync-wave: '4'
+    destination:
+      namespace: openshift-operators
+      name: *destination
+    source:
+      path: components/configuration/openshift-servicemesh/base
+
+
   advanced-cluster-manager:
     annotations:
       argocd.argoproj.io/sync-wave: '4'
@@ -143,6 +154,7 @@ applications:
       namespace: open-cluster-management
       name: *destination
     source:
+      # yamllint disable-line rule:line-length
       path: components/application/advanced-cluster-management/overlays/release-2.12
     syncOptions:
       - CreateNamespace=true
@@ -188,35 +200,35 @@ applications:
     source:
       path: components/application/sealed-secrets/base
 
-  # event-router:
-  #   annotations:
-  #     argocd.argoproj.io/sync-wave: '4'
-  #   destination:
-  #     namespace: openshift-logging
-  #     name: *destination
-  #   source:
-  #     path: components/application/event-router/base
-  #   syncOptions:
-  #     - CreateNamespace=true
+# event-router:
+#   annotations:
+#     argocd.argoproj.io/sync-wave: '4'
+#   destination:
+#     namespace: openshift-logging
+#     name: *destination
+#   source:
+#     path: components/application/event-router/base
+#   syncOptions:
+#     - CreateNamespace=true
 
-  # advanced-cluster-security:
-  #   annotations:
-  #     argocd.argoproj.io/sync-wave: '4'
-  #   destination:
-  #     namespace: stackrox
-  #     name: *destination
-  #   source:
-  #     path: components/application/advanced-cluster-security/overlays/small
-  #   syncOptions:
-  #     - CreateNamespace=true
+# advanced-cluster-security:
+#   annotations:
+#     argocd.argoproj.io/sync-wave: '4'
+#   destination:
+#     namespace: stackrox
+#     name: *destination
+#   source:
+#     path: components/application/advanced-cluster-security/overlays/small
+#   syncOptions:
+#     - CreateNamespace=true
 
-  # falco:
-  #   annotations:
-  #     argocd.argoproj.io/sync-wave: '4'
-  #   destination:
-  #     namespace: falco
-  #     name: *destination
-  #   source:
-  #     path: components/application/falco/base
-  #   syncOptions:
-  #     - CreateNamespace=true
+# falco:
+#   annotations:
+#     argocd.argoproj.io/sync-wave: '4'
+#   destination:
+#     namespace: falco
+#     name: *destination
+#   source:
+#     path: components/application/falco/base
+#   syncOptions:
+#     - CreateNamespace=true
