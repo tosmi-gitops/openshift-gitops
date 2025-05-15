@@ -127,7 +127,7 @@ applications:
     syncOptions:
       - CreateNamespace=true
 
-  openshift-servicemesh-3.0:
+  openshift-servicemesh-operator-3.0:
     annotations:
       argocd.argoproj.io/sync-wave: '4'
     destination:
