@@ -104,7 +104,7 @@ applications:
       namespace: application-gitops
       name: *destination
     source:
-      path: components/apps/application-gitops/overlays/multi-project
+      path: components/application/application-gitops/overlays/multi-project
 
   openshift-pipelines:
     annotations:
@@ -113,7 +113,7 @@ applications:
       namespace: openshift-operators
       name: *destination
     source:
-      path: components/apps/openshift-pipelines/base
+      path: components/application/openshift-pipelines/base
 
   shipwright:
     annotations:
@@ -122,9 +122,10 @@ applications:
       namespace: openshift-operators
       name: *destination
     source:
-      path: components/apps/shipwright/base
+      path: components/application/shipwright/base
     syncOptions:
       - CreateNamespace=true
+
 
   advanced-cluster-manager:
     annotations:
@@ -133,7 +134,7 @@ applications:
       namespace: open-cluster-management
       name: *destination
     source:
-      path: components/apps/advanced-cluster-management/overlays/release-2.12
+      path: components/application/advanced-cluster-management/overlays/release-2.12
     syncOptions:
       - CreateNamespace=true
 
@@ -144,7 +145,7 @@ applications:
       namespace: open-cluster-management
       name: *destination
     source:
-      path: components/apps/multi-cluster-hub/base
+      path: components/application/multi-cluster-hub/base
     syncOptions:
       - CreateNamespace=true
 
@@ -166,7 +167,7 @@ applications:
       namespace: app
       name: *destination
     source:
-      path: components/apps/aap/overlays/stable-2.5
+      path: components/application/aap/overlays/stable-2.5
 
 
   sealed-secrets:
@@ -176,7 +177,7 @@ applications:
       namespace: sealed-secrets
       name: *destination
     source:
-      path: components/apps/sealed-secrets/base
+      path: components/application/sealed-secrets/base
 
   # event-router:
   #   annotations:
@@ -185,7 +186,7 @@ applications:
   #     namespace: openshift-logging
   #     name: *destination
   #   source:
-  #     path: components/apps/event-router/base
+  #     path: components/application/event-router/base
   #   syncOptions:
   #     - CreateNamespace=true
 
@@ -196,7 +197,7 @@ applications:
   #     namespace: stackrox
   #     name: *destination
   #   source:
-  #     path: components/apps/advanced-cluster-security/overlays/small
+  #     path: components/application/advanced-cluster-security/overlays/small
   #   syncOptions:
   #     - CreateNamespace=true
 
@@ -207,6 +208,6 @@ applications:
   #     namespace: falco
   #     name: *destination
   #   source:
-  #     path: components/apps/falco/base
+  #     path: components/application/falco/base
   #   syncOptions:
   #     - CreateNamespace=true
