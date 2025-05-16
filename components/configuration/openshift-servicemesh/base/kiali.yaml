@@ -26,3 +26,11 @@ spec:
       thanos_proxy:
         enabled: true
       url: https://thanos-querier.openshift-monitoring.svc.cluster.local:9091
+---
+apiVersion: kiali.io/v1alpha1
+kind: OSSMConsole
+metadata:
+  namespace: openshift-operators
+  name: ossmconsole
+spec:
+  version: default
