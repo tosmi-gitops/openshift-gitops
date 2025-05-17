@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# XXX unfinished
+
 # shellcheck disable=SC3040
 set -euf -o pipefail
 
