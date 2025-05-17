@@ -163,6 +163,15 @@ applications:
     source:
       path: components/application/openshift-opentelemetry-operator/base
 
+  openshift-tempo:
+    annotations:
+      argocd.argoproj.io/sync-wave: '4'
+    destination:
+      namespace: openshift-operators
+      name: *destination
+    source:
+      path: components/configuration/openshift-tempo/base
+
   openshift-servicemesh-default:
     annotations:
       # install after
