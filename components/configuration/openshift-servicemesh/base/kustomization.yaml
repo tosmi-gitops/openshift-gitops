@@ -9,3 +9,4 @@ resources:
   - istio-cni.yaml
   - kiali.yaml
   - otel-collector.yaml
+  - otel-telemetry.yaml
