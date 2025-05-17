@@ -30,8 +30,8 @@ strong smell of NIH (not invented here syndrom)? Because you need to
 implemented this at least once to get a feeling how the structure
 works and why you actually require it.
 
-| :exclamation:  You should probably use the repositories listed above..   |
-|--------------------------------------------------------------------------|
+| :exclamation:  You should probably use the repositories listed above...   |
+|---------------------------------------------------------------------------|
 
 ### About the GitOps operator and cluster-admin privileges
 
@@ -45,6 +45,19 @@ As a quick fix we basically have two options
 
 * Grant cluster-admin to the GitOps operater (lazy)
 * Create a specific role and rolebinding to fix the issue (unlazy)
+
+
+## Sealed secrets
+
+After installing the GitOps operator and bootstrapping the cluster config, we might need to restore a sealed secret private key.
+
+I basically use a static key for my test clusters. This is *NOT* recommended by sealed-secrets upstream, but makes my test setup easier to restore.
+
+### Sealing a secret
+
+```
+cat secret.yaml | kubeseal --cert ../../etc/tntinfra-sealed-secrets.crt > sealed-secret.yaml
+```
 
 ## ToDo
 
