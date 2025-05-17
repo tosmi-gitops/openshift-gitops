@@ -1,0 +1,28 @@
+---
+apiVersion: tempo.grafana.com/v1alpha1
+kind: TempoStack
+metadata:
+  name: simplest
+  namespace: tempo
+spec:
+  storage:
+    secret:
+      name: tempo-aws-s3
+      type: s3
+  storageSize: 1Gi
+  resources:
+    total:
+      limits:
+        memory: 2Gi
+        cpu: 2000m
+  tenants:
+    mode: openshift
+    authentication:
+      - tenantName: istio
+        tenantId: "d9e2b5cd-1a5c-4732-a0df-343d47e9b2f8"
+  template:
+    gateway:
+      enabled: true
+    queryFrontend:
+      jaegerQuery:
+        enabled: true
