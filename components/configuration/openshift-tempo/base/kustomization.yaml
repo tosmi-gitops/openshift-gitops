@@ -6,3 +6,5 @@ resources:
   - namespace.yaml
   - tempostack.yaml
   - tempo-aws-s3-sealed-secret.yaml
+  - tempostack-traces-writer.yaml
+  - tempostack-traces-reader.yaml
