@@ -10,6 +10,8 @@ spec:
   deploymentUpdateStrategy: {}
   config:
     exporters:
+      debug:
+        verbosity: detailed
       otlp:
         endpoint: 'tempo-simplest-distributor.tempo.svc.cluster.local:4317'
         tls:
