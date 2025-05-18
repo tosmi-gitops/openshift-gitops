@@ -1,0 +1,11 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: bookinfo
+  labels:
+    istio-injection: enabled
+    # only for RevisionBased update strategy
+    # see istio resource (sail opertor)
+    # istio.io/rev: default
+    istio-discovery: enabled

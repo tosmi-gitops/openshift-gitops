@@ -184,6 +184,15 @@ applications:
     source:
       path: components/configuration/openshift-servicemesh/base
 
+  bookinfo:
+    annotations:
+      argocd.argoproj.io/sync-wave: '12'
+    destination:
+      namespace: bookinfo
+      name: *destination
+    source:
+      path: components/application/bookinfo/base
+
 
   advanced-cluster-manager:
     annotations:
