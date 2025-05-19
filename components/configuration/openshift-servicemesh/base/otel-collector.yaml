@@ -9,13 +9,22 @@ spec:
     metrics: {}
   deploymentUpdateStrategy: {}
   config:
+    extensions:
+      bearertokenauth:
+        filename: "/var/run/secrets/kubernetes.io/serviceaccount/token"
     exporters:
       debug:
         verbosity: detailed
-      otlp:
-        endpoint: 'tempo-simplest-distributor.tempo.svc.cluster.local:4317'
+      otlp/istio:
+        endpoint: tempo-simplest-gateway.tempo.svc.cluster.local:8090
         tls:
-          insecure: true
+          # insecure: false
+          ca_file: "/var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt"  # yamllint disable rule:line-length
+
+        auth:
+          authenticator: bearertokenauth
+        headers:
+          X-Scope-OrgID: "istio"
     receivers:
       otlp:
         protocols:
@@ -23,9 +32,12 @@ spec:
             endpoint: '0.0.0.0:4317'
           http: {}
     service:
+      extensions:
+        - bearertokenauth
       pipelines:
         traces:
           exporters:
-            - otlp
+            - otlp/istio
+            - debug
           receivers:
             - otlp
