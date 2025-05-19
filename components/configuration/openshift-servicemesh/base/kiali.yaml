@@ -32,10 +32,10 @@ spec:
       use_grpc: false
       internal_url: https://tempo-simplest-gateway.tempo.svc.cluster.local:8080/api/traces/v1/istio/tempo  # yamllint disable-line rule:line-length
       external_url: https://tempo-simplest-gateway-tempo.apps.hub.aws.tntinfra.net/api/traces/v1/istio/search  # yamllint disable-line rule:line-length
-      health_check_url: https://tempo-simplest-gateway-tempo.apps.hub.aws.tntinfra.net/api/traces/v1/north/tempo/api/echo  # yamllint disable-line rule:line-length
+      health_check_url: https://tempo-simplest-gateway-tempo.apps.hub.aws.tntinfra.net/api/traces/v1/istio/tempo/api/echo  # yamllint disable-line rule:line-length
       auth:
         ca_file: /var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt
-        insecure_skip_verify: false
+        insecure_skip_verify: true
         type: bearer
         use_kiali_token: true
       tempo_config:
