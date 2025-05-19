@@ -1,0 +1,15 @@
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: bookinfo-gateway
+  namespace: bookinfo
+spec:
+  host: bookinfo-gateway-bookinfo.apps.hub.aws.tntinfra.net
+  port:
+    targetPort: 8080
+  to:
+    kind: Service
+    name: bookinfo-gateway
+    weight: 100
+  wildcardPolicy: None
