@@ -1,0 +1,17 @@
+---
+kind: Kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+
+resources:
+  - ../../base
+
+patches:
+  - target:
+      kind: Namespace
+      name: bookinfo
+    patch: |-
+      - op: add
+        path: /metadata/labels/istio.io~1rev
+        value: istio3-v1-24-4
+      - op: delete
+        path: /metadata/labels/istio-injection
