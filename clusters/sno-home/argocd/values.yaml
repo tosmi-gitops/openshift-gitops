@@ -1,3 +1,5 @@
+# yamllint disable rule:line-length
+# yamllint disable rule:comments-indentation
 ---
 clustername: &clustername sno-home
 
@@ -82,7 +84,7 @@ applications:
       namespace: default
       name: *clustername
     source:
-      path: components/apps/openshift-pipelines/base
+      path: components/application/openshift-pipelines/base
 
   openshift-storage:
     annotations:
@@ -100,7 +102,7 @@ applications:
       namespace: default
       name: *clustername
     source:
-      path: components/apps/openshift-nmstate/base
+      path: components/application/openshift-nmstate/base
 
   virt-network:
     annotations:
@@ -127,7 +129,16 @@ applications:
       namespace: default
       name: *clustername
     source:
-      path: components/apps/nfs-subdir-provisioner/base
+      path: components/application/nfs-subdir-provisioner/base
+
+  metallb:
+    annotations:
+      argocd.argoproj.io/sync-wave: '4'
+    destination:
+      namespace: default
+      name: *clustername
+    source:
+      path: components/application/metallb/base
 
   # falco:
   #   annotations:
@@ -136,7 +147,7 @@ applications:
   #     namespace: falco
   #     name: *clustername
   #   source:
-  #     path: components/apps/falco/base
+  #     path: components/application/falco/base
   #   syncOptions:
   #     - CreateNamespace=true
 
