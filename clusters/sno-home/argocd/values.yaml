@@ -140,6 +140,15 @@ applications:
     source:
       path: components/application/metallb/base
 
+  metallb-configuration:
+    annotations:
+      argocd.argoproj.io/sync-wave: '5'
+    destination:
+      namespace: default
+      name: *clustername
+    source:
+      path: components/configuration/metallb/base
+
   # falco:
   #   annotations:
   #     argocd.argoproj.io/sync-wave: '4'
