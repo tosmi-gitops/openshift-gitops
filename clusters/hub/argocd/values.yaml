@@ -247,6 +247,26 @@ applications:
     source:
       path: components/application/sealed-secrets/base
 
+
+  rh-build-keycloak-operator:
+    annotations:
+      argocd.argoproj.io/sync-wave: '5'
+    destination:
+      namespace: aap
+      name: *destination
+    source:
+      path: components/application/redhat-keycloak/base
+
+  rh-keycloak-aap:
+    annotations:
+      argocd.argoproj.io/sync-wave: '5'
+    destination:
+      namespace: aap
+      name: *destination
+    source:
+      path: components/configuration/redhat-keycloak/base
+
+
 # event-router:
 #   annotations:
 #     argocd.argoproj.io/sync-wave: '4'
