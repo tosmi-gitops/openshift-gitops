@@ -48,7 +48,7 @@ spec:
             - name: POSTGRES_PASSWORD
               value: testpassword
             - name: PGDATA
-              value: /data/pgdata
+              value: /data/pgdata/keycloak
             - name: POSTGRES_DB
               value: keycloak
       volumes:
