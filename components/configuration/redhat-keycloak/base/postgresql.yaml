@@ -14,9 +14,9 @@ spec:
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: postgresql-db
+  name: keycloak-postgresql-db
 spec:
-  serviceName: postgresql-db-service
+  serviceName: keycloak-postgresql-db-service
   selector:
     matchLabels:
       app: postgresql-db
@@ -61,7 +61,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: postgres-db
+  name: keycloak-postgresql-db-service
 spec:
   selector:
     app: postgresql-db
