@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: pgsql-data
+  name: keycloak-pgsql-data
 spec:
   accessModes:
     - ReadWriteOnce
@@ -56,7 +56,7 @@ spec:
           emptyDir: {}
         - name: data-volume
           persistentVolumeClaim:
-            claimName: pgsql-data
+            claimName: keycloak-pgsql-data
 ---
 apiVersion: v1
 kind: Service
