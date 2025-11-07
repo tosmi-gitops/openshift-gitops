@@ -1,0 +1,1 @@
+scripts/02-restore-sealed-secrets.sh
