@@ -235,7 +235,7 @@ applications:
       namespace: app
       name: *destination
     source:
-      path: components/application/aap/overlays/stable-2.5
+      path: components/application/aap/overlays/stable-2.6
 
 
   sealed-secrets:
