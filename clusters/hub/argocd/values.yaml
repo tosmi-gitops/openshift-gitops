@@ -228,7 +228,7 @@ applications:
     syncOptions:
       - CreateNamespace=true
 
-  ansible-platform-operator-25:
+  ansible-platform-operator:
     annotations:
       argocd.argoproj.io/sync-wave: '5'
     destination:
