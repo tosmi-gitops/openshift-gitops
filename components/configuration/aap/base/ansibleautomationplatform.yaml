@@ -5,9 +5,7 @@ metadata:
   name: tntinfra
   namespace: aap
 spec:
-  api:
-    log_level: DEBUG
-    replicas: 1
+
   image_pull_policy: IfNotPresent
   ingress_type: Route
   no_log: false
@@ -15,6 +13,10 @@ spec:
   route_host: aap.apps.hub.aws.tntinfra.net
   route_tls_termination_mechanism: Edge
   service_type: ClusterIP
+
+  api:
+    log_level: DEBUG
+    replicas: 1
 
   controller:
     disabled: false
@@ -37,8 +39,8 @@ spec:
     # file_storage_size: 10Gi
 
     ## uncomment if using S3 storage for Content pod
-    storage_type: S3
-    object_storage_s3_secret: tntinfra-aap-hub-bucket-s3
+    storage_type: REPLACEME
+    object_storage_s3_secret: REPLACEME
 
     ## uncomment if using Azure storage for Content pod
     # storage_type: azure
