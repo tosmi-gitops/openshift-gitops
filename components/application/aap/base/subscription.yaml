@@ -1,10 +1,11 @@
+---
 apiVersion: operators.coreos.com/v1alpha1
 kind: Subscription
 metadata:
   name: ansible-automation-platform-operator
   namespace: aap
 spec:
-  channel: stable-2.5
+  channel: CHANGEMEINOVLERAY
   installPlanApproval: Manual
   name: ansible-automation-platform-operator
   source: redhat-operators
