@@ -237,6 +237,14 @@ applications:
     source:
       path: components/application/aap/overlays/stable-2.6
 
+  ansible-platform:
+    annotations:
+      argocd.argoproj.io/sync-wave: '5'
+    destination:
+      namespace: app
+      name: *destination
+    source:
+      path: components/configuration/aap/overlays/aws
 
   sealed-secrets:
     annotations:
@@ -246,7 +254,6 @@ applications:
       name: *destination
     source:
       path: components/application/sealed-secrets/base
-
 
   rh-build-keycloak-operator:
     annotations:
