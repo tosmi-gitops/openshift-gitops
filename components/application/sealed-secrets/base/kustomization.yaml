@@ -12,6 +12,7 @@ helmCharts:
     namespace: sealed-secrets
     releaseName: sealed-secrets
     repo: https://bitnami-labs.github.io/sealed-secrets
+    includeCRDs: true
 
 resources:
   - sealed-secrets-namespace.yaml
