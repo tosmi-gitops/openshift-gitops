@@ -5,6 +5,7 @@ namespace: nfs-subdir-provisioner
 
 resources:
   - namespace.yaml
+  - clusterrolebinding.yaml
 
 helmCharts:
   - name: nfs-subdir-external-provisioner
@@ -13,3 +14,22 @@ helmCharts:
     valuesFile: values.yaml
     namespace: nfs-subdir-provisioner
     releaseName: nfs-subdir-external-provisioner-4.0.18
+
+# patches:
+  # - target:
+  #     kind: StorageProfile
+  #     name: nfs-client
+  #   patch: |-
+  #     - op: add
+  #       path: /spec/claimPropertySets
+  #       value: gitops-1.18
+  #     - op: add
+  #       path: /spec/claimPropertySets/volumeMode
+  #       value: Filesystem
+
+
+# spec:
+#   claimPropertySets:
+#   - accessModes:
+#     - ReadWriteMany
+#     volumeMode: Filesystem
