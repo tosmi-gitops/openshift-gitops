@@ -158,6 +158,15 @@ applications:
     source:
       path: components/configuration/gateway-api/base
 
+  quay-operator:
+    annotations:
+      argocd.argoproj.io/sync-wave: '5'
+    destination:
+      namespace: default
+      name: *clustername
+    source:
+      path: components/application/redhat-quay-operator/overlays/stable-3.16
+
   # falco:
   #   annotations:
   #     argocd.argoproj.io/sync-wave: '4'
