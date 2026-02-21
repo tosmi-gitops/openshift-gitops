@@ -2,6 +2,7 @@
 # yamllint disable rule:comments-indentation
 ---
 clustername: &clustername sno-home
+destination: &destination in-cluster
 
 default:
   app:
@@ -46,7 +47,7 @@ applications:
       argocd.argoproj.io/compare-options: IgnoreExtraneous
     destination:
       namespace: default
-      name: *clustername
+      name: *destination
     source:
       path: components/configuration/oauth/overlays/htpasswd
 
@@ -55,7 +56,7 @@ applications:
       argocd.argoproj.io/sync-wave: '4'
     destination:
       namespace: default
-      name: *clustername
+      name: *destination
     source:
       path: clusters/sno-home/configuration/console-customization
 
@@ -64,7 +65,7 @@ applications:
       argocd.argoproj.io/sync-wave: '4'
     destination:
       namespace: default
-      name: *clustername
+      name: *destination
     source:
       path: components/configuration/groups/base
 
@@ -73,7 +74,7 @@ applications:
       argocd.argoproj.io/sync-wave: '4'
     destination:
       namespace: default
-      name: *clustername
+      name: *destination
     source:
       path: clusters/sno-home/configuration/openshift-gitops/
 
@@ -82,7 +83,7 @@ applications:
       argocd.argoproj.io/sync-wave: '4'
     destination:
       namespace: default
-      name: *clustername
+      name: *destination
     source:
       path: components/application/openshift-pipelines/base
 
@@ -91,7 +92,7 @@ applications:
       argocd.argoproj.io/sync-wave: '4'
     destination:
       namespace: default
-      name: *clustername
+      name: *destination
     source:
       path: components/configuration/openshift-storage/base
 
@@ -100,7 +101,7 @@ applications:
       argocd.argoproj.io/sync-wave: '4'
     destination:
       namespace: default
-      name: *clustername
+      name: *destination
     source:
       path: components/application/openshift-nmstate/base
 
@@ -109,7 +110,7 @@ applications:
       argocd.argoproj.io/sync-wave: '4'
     destination:
       namespace: default
-      name: *clustername
+      name: *destination
     source:
       path: clusters/sno-home/configuration/network/
 
@@ -118,7 +119,7 @@ applications:
       argocd.argoproj.io/sync-wave: '4'
     destination:
       namespace: default
-      name: *clustername
+      name: *destination
     source:
       path: components/configuration/apiserver/overlays/sno
 
@@ -127,7 +128,7 @@ applications:
       argocd.argoproj.io/sync-wave: '4'
     destination:
       namespace: default
-      name: *clustername
+      name: *destination
     source:
       path: components/application/nfs-subdir-provisioner/base
 
@@ -136,7 +137,7 @@ applications:
       argocd.argoproj.io/sync-wave: '4'
     destination:
       namespace: default
-      name: *clustername
+      name: *destination
     source:
       path: components/application/metallb/base
 
@@ -145,7 +146,7 @@ applications:
       argocd.argoproj.io/sync-wave: '5'
     destination:
       namespace: default
-      name: *clustername
+      name: *destination
     source:
       path: components/configuration/metallb/base
 
@@ -154,7 +155,7 @@ applications:
       argocd.argoproj.io/sync-wave: '5'
     destination:
       namespace: default
-      name: *clustername
+      name: *destination
     source:
       path: components/configuration/gateway-api/base
 
@@ -163,7 +164,7 @@ applications:
       argocd.argoproj.io/sync-wave: '5'
     destination:
       namespace: default
-      name: *clustername
+      name: *destination
     source:
       path: components/application/redhat-quay-operator/overlays/stable-3.16
 
@@ -172,7 +173,7 @@ applications:
   #     argocd.argoproj.io/sync-wave: '4'
   #   destination:
   #     namespace: falco
-  #     name: *clustername
+  #     name: *destination
   #   source:
   #     path: components/application/falco/base
   #   syncOptions:
@@ -183,6 +184,6 @@ applications:
   #     argocd.argoproj.io/sync-wave: '4'
   #   destination:
   #     namespace: openshift-gitops
-  #     name: *clustername
+  #     name: *destination
   #   source:
   #     path: components/configuration/onboarding/base
