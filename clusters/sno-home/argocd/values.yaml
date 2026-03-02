@@ -51,6 +51,15 @@ applications:
     source:
       path: components/configuration/oauth/overlays/htpasswd
 
+  sealed-secrets:
+    annotations:
+      argocd.argoproj.io/sync-wave: '5'
+    destination:
+      namespace: sealed-secrets
+      name: *destination
+    source:
+      path: components/application/sealed-secrets/base
+
   console-customization:
     annotations:
       argocd.argoproj.io/sync-wave: '4'
