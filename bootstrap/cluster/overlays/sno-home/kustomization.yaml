@@ -13,14 +13,6 @@ resources:
 patches:
   - target:
       kind: AppProject
-      name: cluster-config-managers
-    patch: |-
-      - op: replace
-        path: /spec/destinations/0/name
-        value: sno-home
-
-  - target:
-      kind: AppProject
       name: replaceme
     patch: |-
       - op: replace
@@ -28,10 +20,10 @@ patches:
         value: cluster-config-sno-home
       - op: replace
         path: /spec/destinations/0/name
-        value: sno-home
+        value: in-cluster
       - op: replace
         path: /spec/destinations/1/name
-        value: sno-home
+        value: in-cluster
 
   - target:
       kind: Application
@@ -42,7 +34,7 @@ patches:
         value: cluster-config-manager-sno-home
       - op: replace
         path: /spec/destination/name
-        value: sno-home
+        value: in-cluster
       - op: replace
         path: /spec/project
         value: cluster-config-managers
