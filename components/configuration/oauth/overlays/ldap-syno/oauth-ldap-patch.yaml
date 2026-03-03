@@ -1,0 +1,22 @@
+- op: add
+  path: /spec/identityProviders/-
+  value:
+    mappingMethod: claim
+    name: ldapidp
+    type: LDAP
+    ldap:
+      attributes:
+        email:
+        - mail
+        id:
+        - dn
+        name:
+        - cn
+        preferredUsername:
+        - uid
+      bindDN: uid=bind,cn=users,dc=lan,dc=stderr,dc=at
+      bindPassword:
+        name: ldap-secret
+      insecure: true
+      url: ldap://data.lan.stderr.at/cn=users,dc=lan,dc=stderr,dc=at?uid
+      filter: "memberOf=cn=openshift,cn=groups,dc=lan,dc=stderr,dc=at"
