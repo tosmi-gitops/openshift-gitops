@@ -37,7 +37,7 @@ projects:
 
 applications:
 
-  oauth-htpasswd:
+  openshift-oauth:
     annotations:
       argocd.argoproj.io/sync-wave: '4'
       argocd.argoproj.io/compare-options: IgnoreExtraneous
@@ -45,7 +45,7 @@ applications:
       namespace: default
       name: *destination
     source:
-      path: components/configuration/oauth/overlays/htpasswd
+      path: components/configuration/openshift-oauth/overlays/htpasswd
 
   console-customization:
     annotations:
