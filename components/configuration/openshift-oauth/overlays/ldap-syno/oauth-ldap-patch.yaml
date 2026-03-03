@@ -2,7 +2,7 @@
   path: /spec/identityProviders/-
   value:
     mappingMethod: claim
-    name: ldapidp
+    name: LDAP Authentcation
     type: LDAP
     ldap:
       attributes:
@@ -17,6 +17,8 @@
       bindDN: uid=bind,cn=users,dc=lan,dc=stderr,dc=at
       bindPassword:
         name: ldap-secret
-      insecure: true
-      url: ldap://data.lan.stderr.at/cn=users,dc=lan,dc=stderr,dc=at?uid
+      url: ldaps://data.lan.stderr.at/cn=users,dc=lan,dc=stderr,dc=at?uid
       filter: "memberOf=cn=openshift,cn=groups,dc=lan,dc=stderr,dc=at"
+      insecure: false
+      ca:
+        name: ldap-ca-cert
