@@ -6,3 +6,4 @@ resources:
   - sno-tls-sealed-secret.yaml
   - proxy-config.yaml
   - custom-ca.yaml
+  - ingresscontroller.yaml
