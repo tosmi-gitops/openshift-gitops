@@ -1,0 +1,22 @@
+apiVersion: operator.openshift.io/v1
+kind: IngressController
+metadata:
+  name: default
+  namespace: openshift-ingress-operator
+spec:
+  clientTLS:
+    clientCA:
+      name: ""
+    clientCertificatePolicy: ""
+  closedClientConnectionPolicy: Continue
+  httpCompression: {}
+  httpEmptyRequestsPolicy: Respond
+  httpErrorCodePages:
+    name: ""
+  idleConnectionTerminationPolicy: Immediate
+  replicas: 1
+  tuningOptions:
+    reloadInterval: 0s
+  unsupportedConfigOverrides: null
+  defaultCertificate:
+    name: "sno-home-cert"
