@@ -1,0 +1,72 @@
+apiVersion: kubevirt.io/v1
+kind: VirtualMachine
+metadata:
+  annotations:
+  labels:
+    app: rhel10
+    kubevirt.io/dynamic-credentials-support: "true"
+  name: rhel10
+  namespace: lab
+spec:
+  dataVolumeTemplates:
+  - apiVersion: cdi.kubevirt.io/v1beta1
+    kind: DataVolume
+    metadata:
+      creationTimestamp: null
+      name: rhel10
+    spec:
+      source:
+        registry:
+          secretRef: redhat-registry-creds
+          url: docker://registry.redhat.io/rhel10/rhel-guest-image:latest
+      storage:
+        resources:
+          requests:
+            storage: 100Gi
+  runStrategy: RerunOnFailure
+  template:
+    metadata:
+      annotations:
+        vm.kubevirt.io/os: rhel10
+        vm.kubevirt.io/workload: server
+      labels:
+        kubevirt.io/domain: rhel10
+        network.kubevirt.io/headlessService: headless
+    spec:
+      architecture: amd64
+      domain:
+        cpu:
+          cores: 1
+          sockets: 2
+          threads: 1
+        devices:
+          disks:
+          - disk:
+              bus: virtio
+            name: rootdisk
+          - disk:
+              bus: virtio
+            name: cloudinitdisk
+          interfaces:
+          - macAddress: 02:d3:74:39:cd:d1
+            model: virtio
+            name: default
+        features:
+          smm:
+            enabled: true
+        machine:
+          type: pc-q35-rhel9.6.0
+        memory:
+          guest: 4Gi
+      networks:
+      - name: default
+      terminationGracePeriodSeconds: 180
+      volumes:
+      - dataVolume:
+          name: rhel10
+        name: rootdisk
+      - cloudInitNoCloud:
+          userData:
+            secretRef:
+              name: rhel10-cloudinit
+        name: cloudinitdisk

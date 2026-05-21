@@ -1,0 +1,17 @@
+apiVersion: cdi.kubevirt.io/v1beta1
+kind: DataVolume
+metadata:
+  annotations:
+    cdi.kubevirt.io/allowClaimAdoption: "true"
+    cdi.kubevirt.io/storage.usePopulator: "true"
+  name: rhel10
+  namespace: lab
+spec:
+  source:
+    registry:
+      secretRef: redhat-registry-creds
+      url: docker://registry.redhat.io/rhel10/rhel-guest-image:latest
+  storage:
+    resources:
+      requests:
+        storage: 100Gi
